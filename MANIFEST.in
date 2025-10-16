@@ -1,0 +1,2 @@
+# Include all files inside the DielectricFunction directory
+recursive-include mqed/DielectricFunction *

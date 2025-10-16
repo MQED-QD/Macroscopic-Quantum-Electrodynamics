@@ -1,0 +1,14 @@
+# pyproject.toml
+
+[build-system]
+# Tells pip to use setuptools to build your package
+requires = ["setuptools>=61.0"]
+build-backend = "setuptools.build_meta"
+
+[tool.pytest.ini_options]
+# Configuration for the pytest testing framework (for when you add tests)
+minversion = "6.0"
+addopts = "-ra -q"
+testpaths = [
+    "tests",
+]

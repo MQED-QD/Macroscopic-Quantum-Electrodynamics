@@ -1,0 +1,37 @@
+name: mqed
+
+channels:
+  - conda-forge
+  - defaults
+
+dependencies:
+  - python=3.13
+  - numpy
+  - scipy
+  - pandas
+  - matplotlib
+  - seaborn
+  - h5py
+  - qutip
+  - pytest
+  - jupyter
+  - pillow
+  - tqdm
+  - pyqt
+  - lmdb
+  - pip>=23
+  - pip:
+      - hydra-core=1.*
+      - hydra-colorlog
+      - hydra-optuna-sweeper
+      - optuna
+      - rootutils
+      - gitpython
+      - loguru
+      - sphinx
+      - sphinx-rtd-theme
+      - rich
+      - pyvista[all]
+      - sqlalchemy
+      - alembic
+      - openpyxl

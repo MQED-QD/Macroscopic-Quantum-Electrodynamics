@@ -1,0 +1,20 @@
+# Personal simulation results
+outputs/
+
+# Python cache and compiled files
+__pycache__/
+*.pyc
+*.pyo
+*.pyd
+
+# IDE and editor specific files
+.vscode/
+.idea/
+
+# Testing cache
+.pytest_cache/
+
+# Distribution and packaging files
+build/
+dist/
+*.egg-info/
