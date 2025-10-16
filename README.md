@@ -1,0 +1,2 @@
+An algorithm for Macroscopic Quantum Electrodynamics studying direct intermolecular interaction. 
+Workflow: 1. Calculate Dyadic Green's function. 2.Construct dipole-dipole interaction matrix elements. 3. Simulating quantum dynamics (Lindblad equation or non-Hermitian Schodinger equation.)
