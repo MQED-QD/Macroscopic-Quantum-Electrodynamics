@@ -24,14 +24,13 @@ class SimulationConfig:
     mu_D_debye: float           # donor dipole
     mu_A_debye: Union[None,float]            # acceptor dipole, default is none
     theta_deg: float            # polar angle of dipole
-    phi_deg: str | float             # azimuthal angle of dipole, string used for magic angle
-    disorder_sigma_phi_deg=None # standard deviation of azimuthal angle
+    phi_deg: Union[str,float]           # azimuthal angle of dipole, string used for magic angle
+    disorder_sigma_phi_deg: Union[None,float] # standard deviation of azimuthal angle
     mode: str                   # The string for angle-ordered system or disorder system.
 
 @dataclass
 class SimulationResult:
     tlist: np.ndarray
-    states: List[Qobj]
     expectations: Dict[str, np.ndarray] = field(default_factory=dict)
 
 class QuantumDynamics(ABC):
@@ -215,7 +214,7 @@ class LindbladDynamics(QuantumDynamics):
             named = {name: np.asarray(result.expect[n]) for n, name in enumerate(e_ops.keys())}
         else:
             named = {}
-        return SimulationResult(tlist=self.cfg.tlist, states=result.states ,expectations=named)
+        return SimulationResult(tlist=self.cfg.tlist ,expectations=named)
 
 class NonHermitianSchDynamics(QuantumDynamics):
     def __init__(self, config,GreensFunction):
@@ -252,7 +251,7 @@ class NonHermitianSchDynamics(QuantumDynamics):
                         options = options)
         
         named = {name: np.asarray(result.expect[n]) for n, name in enumerate(e_ops.keys())} if e_ops else {}
-        return SimulationResult(tlist=self.cfg.tlist , states= result.states, expectations=named)
+        return SimulationResult(tlist=self.cfg.tlist, expectations=named)
 
 
 
