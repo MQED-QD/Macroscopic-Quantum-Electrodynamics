@@ -12,7 +12,7 @@ def resolve_angle_deg(v):
         return MAGIC_DEG
     if s in {"acos(1/sqrt(3))", "arccos(1/sqrt(3))"}:
         return MAGIC_DEG
-    logger.error(f"Unrecognized angle spec: {v!r}")
+    raise ValueError(f"Unrecognized angle spec: {v!r}")
 
 
 def spherical_to_cartesian_dipole(theta_deg, phi_deg):
