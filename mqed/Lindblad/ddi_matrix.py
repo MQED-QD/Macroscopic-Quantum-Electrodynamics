@@ -77,7 +77,7 @@ def build_ddi_matrix_from_Gslice(
             raise ValueError("mode='stationary' requires uD and uA (shape (3,)).")
         uD = np.asarray(uD, dtype=float).reshape(3)
         uA = np.asarray(uA, dtype=float).reshape(3)
-        U_list_used = None
+        # U_list_used = None
     elif mode == "disorder":
         if U_list is not None:
             U = np.asarray(U_list, dtype=float)
@@ -87,9 +87,11 @@ def build_ddi_matrix_from_Gslice(
             if phi_deg is None or disorder_sigma_phi_deg is None:
                 raise ValueError("mode='disorder' needs disorder_mu_phi_deg and disorder_sigma_phi_deg "
                                  "if U_list is not provided.")
+            logger.info('Generating orientation-disordered U_list.')
+            phi_deg = resolve_angle_deg(phi_deg) # allow magic angle. 
             phi_deg = _phi_wrapped_normal_deg(N_mol, phi_deg, disorder_sigma_phi_deg, seed=disorder_seed)
             U = spherical_to_cartesian_dipole(theta_deg, phi_deg)  # (N,3)
-        U_list_used = U
+        # U_list_used = U
     else:
         raise ValueError("mode must be 'stationary' or 'disorder'.")
 
