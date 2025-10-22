@@ -8,6 +8,15 @@ def msd_operator(dim: int, d_nm: float, Nmol: int, init_site_index: int) -> Qobj
 
     Basis: |0> (ground), |1>,...,|N> (site excitations).
     Positions are 0 for ground and j*d for site j. MSD = (X - x0 I)^2.
+    ..math::
+        \langle x^2 \rangle - \langle x \rangle^2
+    Args:
+        dim (int): Dimension of the Hilbert space (Nmol + 1).
+        d_nm (float): Distance between adjacent molecules in nm.
+        Nmol (int): Number of molecular emitters.
+        init_site_index (int): Index of the initially excited site (default 1).
+    Returns:
+        Qobj: Mean-square displacement operator.
     """
     positions = np.zeros(dim)
     positions[1:] = d_nm * np.arange(1, Nmol + 1, dtype=float)
@@ -29,3 +38,23 @@ def excitation_population_operator(dim: int, Nmol:int) -> Qobj:
     e_ops_populations = [projection(dim, i+1, i+1) for i in range(Nmol)]
 
     return e_ops_populations
+
+def position_operator(dim: int, d_nm: float, Nmol: int, init_site_index: int) -> Qobj:
+    """Position operator in the single-excitation manifold.
+    Basis: |0> (ground), |1>,...,|N> (site excitations).
+    Positions are 0 for ground and j*d for site j. 
+    ..math::
+        |x(t)-x_{0}| = \langle X - x0 I \rangle (or Tr(X rho) - x0)
+    Args:
+        dim (int): Dimension of the Hilbert space (Nmol + 1).
+        d_nm (float): Distance between adjacent molecules in nm.
+        Nmol (int): Number of molecular emitters.
+        init_site_index (int): Index of the initially excited site (default 1).
+    Returns:
+        Qobj: Position operator.
+    """
+    positions = np.zeros(dim)
+    positions[1:] = d_nm * np.arange(1, Nmol + 1, dtype=float)
+    X = Qobj(np.diag(positions), dims=[[dim], [dim]])
+    x0 = positions[init_site_index]
+    return (X - x0 * qeye(dim))
