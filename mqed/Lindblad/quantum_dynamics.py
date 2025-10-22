@@ -44,7 +44,7 @@ class QuantumDynamics(ABC):
         self.dim = self.cfg.Nmol + 1
         self.omega_M = self.cfg.emitter_frequency /au_to_eV
     
-    def build_hamiltonian(self,Green) -> Qobj:
+    def build_hamiltonian(self,Green, seed:Union[int,None] = None) -> Qobj:
         """
         Construct Hamiltonian of the system
         ..math::
@@ -64,21 +64,37 @@ class QuantumDynamics(ABC):
                                                     self.phi_deg)
         
         # here V and Gamma have unit of eV. 
-        self.V_ab, self.Gamma_ab = build_ddi_matrix_from_Gslice(
-            G_slice = Green,
-            Rx_nm = self.cfg.Rx_nm,
-            energy_emitter = self.cfg.emitter_frequency,
-            N_mol= self.cfg.Nmol,
-            d_nm = self.cfg.d_nm,
-            uD = p_donor,
-            uA = p_acceptor,
-            mu_D_debye = self.cfg.mu_D_debye,
-            mu_A_debye = self.cfg.mu_A_debye,
-            mode = self.cfg.mode,
-            phi_deg = self.phi_deg,
-            theta_deg= self.cfg.theta_deg,
-            disorder_sigma_phi_deg= self.cfg.disorder_sigma_phi_deg
-        )
+            self.V_ab, self.Gamma_ab = build_ddi_matrix_from_Gslice(
+                G_slice = Green,
+                Rx_nm = self.cfg.Rx_nm,
+                energy_emitter = self.cfg.emitter_frequency,
+                N_mol= self.cfg.Nmol,
+                d_nm = self.cfg.d_nm,
+                uD = p_donor,
+                uA = p_acceptor,
+                mu_D_debye = self.cfg.mu_D_debye,
+                mu_A_debye = self.cfg.mu_A_debye,
+                mode = self.cfg.mode,
+                phi_deg = self.phi_deg,
+                theta_deg= self.cfg.theta_deg,
+                disorder_sigma_phi_deg= self.cfg.disorder_sigma_phi_deg,
+                disorder_seed= None
+            )
+        else:  # disorder mode
+            self.V_ab, self.Gamma_ab = build_ddi_matrix_from_Gslice(
+                G_slice = Green,
+                Rx_nm = self.cfg.Rx_nm,
+                energy_emitter = self.cfg.emitter_frequency,
+                N_mol= self.cfg.Nmol,
+                d_nm = self.cfg.d_nm,
+                mu_D_debye = self.cfg.mu_D_debye,
+                mu_A_debye = self.cfg.mu_A_debye,
+                mode = self.cfg.mode,
+                phi_deg = self.cfg.phi_deg,
+                theta_deg= self.cfg.theta_deg,
+                disorder_sigma_phi_deg= self.cfg.disorder_sigma_phi_deg,
+                disorder_seed= seed
+            )
 
         H_np[1:, 1:] = self.V_ab / au_to_eV
         np.fill_diagonal(H_np[1:, 1:], self.omega_M)
@@ -183,13 +199,14 @@ class LindbladDynamics(QuantumDynamics):
     ..math::
         \dot{\rho} = -\frac{i}{\hbar}[H, \rho] + \sum_{i} \gamma_i \left( L_i \rho L_i^{\dagger} - \frac{1}{2} \{ L_i^{\dagger} L_i, \rho \} \right).
     """
-    def __init__(self, config, GreensFunction):
+    def __init__(self, config, GreensFunction, seed: Union[int, None]=None):
         super().__init__(config)
         self.cfg = config
         # self.dim = self.cfg.Nmol + 1
         # self.rho = fock_dm(self.dim, 1)
         self.t_evaluation = self.cfg.tlist * ps_to_au
         self.GF = GreensFunction
+        self.seed = seed
     
     def evolve(self,
                 rho_or_psi: Qobj,
@@ -203,7 +220,7 @@ class LindbladDynamics(QuantumDynamics):
             options: optional restrict for differential equation solver.  
         """
 
-        Hamiltonian = self.build_hamiltonian(self.GF)
+        Hamiltonian = self.build_hamiltonian(self.GF, seed = self.seed)
         c_ops = self.build_collapse_ops()
 
         result = mesolve(Hamiltonian, rho_or_psi, self.t_evaluation, c_ops = c_ops,
@@ -217,17 +234,17 @@ class LindbladDynamics(QuantumDynamics):
         return SimulationResult(tlist=self.cfg.tlist ,expectations=named)
 
 class NonHermitianSchDynamics(QuantumDynamics):
-    def __init__(self, config,GreensFunction):
+    def __init__(self, config,GreensFunction, seed: Union[int, None]=None):
         super().__init__(config)
         self.cfg = config
         self.GF = GreensFunction
         self.t_evaluation = self.cfg.tlist * ps_to_au
-    
+        self.seed = seed
     def eff_Hamiltonian(self) -> Qobj:
         """
         Construct effective non-Hermitian Hamiltonian by:
         """
-        H = self.build_hamiltonian(self.GF)
+        H = self.build_hamiltonian(self.GF,seed = self.seed)
 
         H_full = H.full().copy()
         
