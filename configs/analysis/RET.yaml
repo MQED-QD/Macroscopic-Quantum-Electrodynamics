@@ -2,6 +2,7 @@
 defaults:
   - hydra: default  # <-- This loads configs/Dyadic_GF/hydra/default.yaml
   - _self_
+log_file: ${hydra:runtime.output_dir}/${hydra.job.name}.log
 
 input_file: "/home/guangmingliu/Documents/Notre_Dame/2025Fall/MacroscopicQED/outputs/Dyadic_GF_analytical/2025-10-13/11-29-07/result_Ag_2_nm.hdf5" # 
 
