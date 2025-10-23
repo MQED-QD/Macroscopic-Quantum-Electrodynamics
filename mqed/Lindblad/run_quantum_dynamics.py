@@ -7,38 +7,13 @@ from pathlib import Path
 from qutip import fock, fock_dm
 from typing import Optional
 
+from hydra import compose
+
 from mqed.Lindblad.quantum_dynamics import SimulationConfig, LindbladDynamics, NonHermitianSchDynamics
 from mqed.utils.dgf_data import load_gf_h5
 from hydra.core.hydra_config import HydraConfig
-from mqed.Lindblad.quantum_operator import msd_operator, excitation_population_operator
-
-def save_qdyn_h5(outfile: Path, method: str, t_ps: np.ndarray, expectations: dict):
-    outfile.parent.mkdir(parents=True, exist_ok=True)
-    with h5py.File(outfile, 'w') as f:
-        f.attrs['method'] = method
-        f.create_dataset('t_ps', data=np.asarray(t_ps))
-
-
-        # # Save states (density matrices or kets)
-        # if states is not None and len(states) > 0:
-        #     first = states[0]
-        # if hasattr(first, 'isket') and first.isket:
-        #     arr = np.stack([s.full().ravel() for s in states], axis=0)
-        #     f.create_dataset('state_vectors_flat', data=arr)
-        #     f.attrs['state_format'] = 'ket_flat'
-        # else:
-        #     arr = np.stack([s.full() for s in states], axis=0)
-        #     f.create_dataset('density_matrices', data=arr)
-        #     f.attrs['state_format'] = 'density_matrix'
-
-
-        # Save expectations
-        exp_grp = f.create_group('expectations')
-        for name, val in expectations.items():
-            exp_grp.create_dataset(name, data=np.asarray(val))
-
-
-        logger.success(f"Saved quantum dynamics results → {outfile}")
+from mqed.Lindblad.quantum_operator import msd_operator, excitation_population_operator, position_operator
+from mqed.utils.save_hdf5 import save_dx_h5
 
 def app_run(cfg:DictConfig, output_dir: Optional[Path]=None):
     if output_dir is None:
@@ -92,34 +67,50 @@ def app_run(cfg:DictConfig, output_dir: Optional[Path]=None):
         raise ValueError(f"Unknown solver.method = {method}")
 
 
-    # 4) e_ops: mean-square displacement (and optional extras)
-    msd_op = msd_operator(dim=sim_cfg.Nmol + 1,
-        d_nm=sim_cfg.d_nm,
-        Nmol=sim_cfg.Nmol,
-        init_site_index=cfg.initial_state.site_index)
     
     excitation_population_ops = excitation_population_operator(dim =sim_cfg.Nmol + 1,
                                                             Nmol=sim_cfg.Nmol)
 
 
-    e_ops = {'MSD_nm2': msd_op, 'Excitation_Populations': excitation_population_ops}
+    e_ops = {"X_shift": position_operator(sim_cfg.Nmol + 1, sim_cfg.d_nm, sim_cfg.Nmol, cfg.initial_state.site_index),
+            "X_shift2": msd_operator(sim_cfg.Nmol + 1, sim_cfg.d_nm, sim_cfg.Nmol, cfg.initial_state.site_index)}
 
 
     # 5) Evolve
     result = dyn.evolve(rho_or_psi, e_ops=e_ops, options=None)
 
+    #calculate dx from expectations
+    ex1 = np.asarray(result.expectations["X_shift"])
+    ex2 = np.asarray(result.expectations["X_shift2"])
+    dx = np.sqrt(np.maximum(0.0, ex2 - ex1**2))
+
 
     # 6) Save to HDF5
     outfile = output_dir / cfg.output.filename
     # states = getattr(result, 'states', None)
-    save_qdyn_h5(outfile, method=method, t_ps=result.tlist, expectations=result.expectations)
+    save_dx_h5(
+    outfile=outfile,
+    t_ps=result.tlist,
+    dx_mean_nm=dx,
+    dx_std_nm=np.zeros_like(dx),      # single run → zero spread
+    method=method,
+    mode="stationary",
+    n_realizations=1,
+    expectations=result.expectations, # keeps raw expectations if you want
+    )
 
 
-    logger.info("Done.")
+    logger.success(f"Simulation complete. Output saved to: {outfile.absolute()}")
 
 @hydra.main(config_path="../../configs/Lindblad", config_name="quantum_dynamics", version_base=None)
-def run_quantum_dynamics(cfg:DictConfig):
+def mqed_lindblad(cfg:DictConfig):
+    cfg = compose(config_name="quantum_dynamics", overrides=["solver.method=Lindblad"])
+    app_run(cfg)
+
+@hydra.main(config_path="../../configs/Lindblad", config_name="quantum_dynamics", version_base=None)
+def mqed_nhse(cfg:DictConfig):
+    cfg = compose(config_name="quantum_dynamics", overrides=["solver.method=NonHermitian"])
     app_run(cfg)
 
 if __name__ == "__main__":
-    run_quantum_dynamics()
+    mqed_nhse()
