@@ -1,5 +1,6 @@
 # Personal simulation results
 outputs/
+data/
 
 # Python cache and compiled files
 __pycache__/
