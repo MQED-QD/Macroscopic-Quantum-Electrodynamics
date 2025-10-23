@@ -24,9 +24,10 @@ setup(
         "console_scripts": [
             "mqed_GF = mqed.Dyadic_GF.main:run_simulation",
             "mqed_RET = mqed.analysis.RET:main",
-            "mqed_lindblad = mqed.Lindblad.cli:mqed_lindblad",
-            "mqed_nhse = mqed.Lindblad.cli:mqed_nhse",
+            "mqed_lindblad = mqed.Lindblad.run_quantum_dynamics:mqed_lindblad",
+            "mqed_nhse = mqed.Lindblad.run_quantum_dynamics:mqed_nhse",
             "mqed_nhse_disorder = mqed.Lindblad.run_disorder:run_disorder",
+            "mqed_plot_sqrt_msd = mqed.plotting.plot_sqrt_msd:main",
         ]
     },
 
