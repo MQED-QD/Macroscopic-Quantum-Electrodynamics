@@ -1,39 +1,41 @@
-import logging
+# logging_bootstrap.py
 from loguru import logger
-import sys
+import logging, sys
+from pathlib import Path
 
-# This InterceptHandler is a standard pattern for bridging the two logging systems.
 class InterceptHandler(logging.Handler):
-    """
-    Takes messages from the standard logging module and redirects them to Loguru.
-    """
     def emit(self, record):
         try:
             level = logger.level(record.levelname).name
         except ValueError:
             level = record.levelno
+        logger.opt(depth=6, exception=record.exc_info).log(level, record.getMessage())
 
-        frame, depth = logging.currentframe(), 2
-        while frame.f_code.co_filename == logging.__file__:
-            frame = frame.f_back
-            depth += 1
+def setup_loggers_hydra_aware():
+    # Try to grab the Hydra runtime dir; fallback to CWD if not initialized (e.g., during unit tests)
+    try:
+        from hydra.core.hydra_config import HydraConfig
+        if HydraConfig.initialized():
+            outdir = Path(HydraConfig.get().runtime.output_dir)
+            job_name = HydraConfig.get().job.name
+        else:
+            outdir = Path.cwd()
+            job_name = "run"
+    except Exception:
+        outdir = Path.cwd()
+        job_name = "run"
 
-        logger.opt(depth=depth, exception=record.exc_info).log(level, record.getMessage())
+    outdir.mkdir(parents=True, exist_ok=True)
+    logfile = outdir / f"{job_name}.log"
 
-def setup_loguru():
-    """
-    Configures Loguru to be the single, authoritative logger.
-    It removes default handlers, adds a new one that respects Hydra's
-    console logging level, and intercepts standard logging messages.
-    """
-    # Remove the default loguru handler
     logger.remove()
-    
-    # Get the logging level from Hydra's config (or default to INFO)
-    log_level = logging.getLogger().level or logging.INFO
-    
-    # Add a new sink to stderr that respects the configured level
-    logger.add(sys.stderr, level=log_level)
-    
-    # Add the intercept handler to capture standard logging messages
-    logging.basicConfig(handlers=[InterceptHandler()], level=0, force=True)
+    logger.add(sys.stdout,
+               level="INFO",
+               format="<green>{time}</green> | <level>{message}</level>")
+    logger.add(logfile, level="DEBUG", encoding="utf-8", backtrace=False, diagnose=False)
+
+    # Bridge stdlib logging into Loguru so libraries show up too
+    logging.basicConfig(handlers=[InterceptHandler()], level=logging.DEBUG)
+
+    logger.success(f"Logging -> {logfile}")
+    return logfile
