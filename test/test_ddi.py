@@ -52,7 +52,7 @@ def test_stationary():
     V_ab_test, Gamma_ab_test = build_ddi_matrix_from_Gslice(
         G_slice= Gtot[0],
         Rx_nm = Rx_nm,
-        energy_eV= E_eV[0],
+        energy_emitter= E_eV[0],
         N_mol= N_mol,
         d_nm=d_nm,
         mu_D_debye= mu_d_debye,
@@ -115,7 +115,7 @@ def test_disorder_matrix():
     V_ab_test, Gamma_ab_test = build_ddi_matrix_from_Gslice(
         G_slice= Gtot[0],
         Rx_nm = Rx_nm,
-        energy_eV= E_eV[0],
+        energy_emitter= E_eV[0],
         N_mol= N_mol,
         d_nm=d_nm,
         mu_D_debye= mu_d_debye,
