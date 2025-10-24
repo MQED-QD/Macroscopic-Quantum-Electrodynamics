@@ -26,8 +26,8 @@ def build_ddi_matrix_from_Gslice(
     uD: Union[np.ndarray, None]=None,     # used if mode="stationary": 1D (3,)
     uA: Union[np.ndarray, None]=None,     # used if mode="stationary": 1D (3,)
     U_list= None,          # optional per-molecule orientations (N,3); if provided, used in disorder mode
-    theta_deg: None,     # used only if we need to generate U_list
-    phi_deg: None,       # used only if we need to generate U_list
+    theta_deg: Union[None,float]=None,     # used only if we need to generate U_list
+    phi_deg: Union[None,float]=None,       # used only if we need to generate U_list
     disorder_sigma_phi_deg=None,    # used only if we need to generate U_list
     disorder_seed=None              # used only if we need to generate U_list
 ):
