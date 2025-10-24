@@ -121,6 +121,7 @@ def run_disorder(cfg: DictConfig) -> None:
     stack = np.stack(results, axis=0)
     dx_mean = np.mean(stack, axis=0)
     dx_std = np.std(stack, axis=0)
+    # breakpoint()
 
     save_dx_h5(
     outfile=outdir / cfg.output.filename,
