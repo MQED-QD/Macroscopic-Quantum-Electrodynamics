@@ -28,6 +28,7 @@ setup(
             "mqed_nhse = mqed.Lindblad.run_quantum_dynamics:mqed_nhse",
             "mqed_nhse_disorder = mqed.Lindblad.run_disorder:run_disorder",
             "mqed_plot_sqrt_msd = mqed.plotting.plot_sqrt_msd:main",
+            "mqed_plot_msd = mqed.plotting.plot_msd:main",
         ]
     },
 
