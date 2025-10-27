@@ -24,7 +24,7 @@ def msd_operator(dim: int, d_nm: float, Nmol: int, init_site_index: int) -> Qobj
     x0 = positions[init_site_index]
     return (X - x0 * qeye(dim)) ** 2
 
-def excitation_population_operator(dim: int, Nmol:int) -> Qobj:
+def site_population_operator(dim: int, site:int) -> Qobj:
     """
     This creates a list of projectors:
     |e_j><e_j| for j=1,...,Nmol
@@ -33,9 +33,9 @@ def excitation_population_operator(dim: int, Nmol:int) -> Qobj:
         dim (int): Dimension of the Hilbert space (Nmol + 1).
         Nmol (int): Number of molecules.
     Returns:
-        List[Qobj]: List of projection operators for each molecule's excitation.
+        Qobj:projection operators for each molecule's excitation.
     """
-    e_ops_populations = [projection(dim, i+1, i+1) for i in range(Nmol)]
+    e_ops_populations = projection(dim, site+1, site+1)
 
     return e_ops_populations
 
