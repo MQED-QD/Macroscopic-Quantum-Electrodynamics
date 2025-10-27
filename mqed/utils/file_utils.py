@@ -1,31 +1,33 @@
 # mqed/utils/file_utils.py
 
+import os
 from pathlib import Path
 from omegaconf import DictConfig
 from loguru import logger
 
-def find_latest_file(directory: str, pattern: str = "result_*.hdf5"):
+def _resolve_path(p: str) -> Path:
+    """Expand env vars and ~, return absolute Path."""
+    return Path(os.path.expandvars(os.path.expanduser(p))).resolve()
+
+
+def _find_newest(pattern: str) -> Path | None:
+    """Return newest file matching a glob pattern, or None."""
+    logger.debug(f"Finding newest file matching pattern: {pattern}")
+    from glob import glob
+    hits = sorted(glob(pattern), key=lambda s: Path(s).stat().st_mtime, reverse=True)
+    return Path(hits[0]).resolve() if hits else None
+
+def _resolve_input_path(curve_cfg) -> Path:
     """
-    Finds the latest file in a directory that matches a given pattern.
-    
-    Args:
-        directory (str): The directory to search.
-        pattern (str): The filename pattern (e.g., 'result_*.hdf5').
-
-    Returns:
-        Path: The most recently modified matching file.
-
-    Raises:
-        FileNotFoundError: If no matching files are found.
+    Either use an absolute 'path', or if 'use_latest_glob' is set,
+    choose newest file matching the glob (relative to MQED_ROOT/PWD if present).
     """
-    if isinstance(directory, DictConfig):
-        directory = directory.get("dir", str(directory))
-    dir_path = Path(str(directory))
-    dir_path = Path(directory)
-    files = list(dir_path.glob(pattern))
-    if not files:
-        raise FileNotFoundError(f"No files matching {pattern} found in {dir_path}")
-
-    latest_file = max(files, key=lambda f: f.stat().st_mtime)
-    logger.info(f"Found latest file: {latest_file}")
-    return latest_file
+    if getattr(curve_cfg, "path", None):
+        return _resolve_path(curve_cfg.path)
+    if getattr(curve_cfg, "use_latest_glob", None):
+        base = os.environ.get("MQED_ROOT", os.environ.get("PWD", "."))
+        newest = _find_newest(os.path.join(base, curve_cfg.use_latest_glob))
+        if newest is None:
+            raise FileNotFoundError(f"No files for pattern: {curve_cfg.use_latest_glob}")
+        return newest
+    raise ValueError("Each curve needs either 'path' or 'use_latest_glob'.")
