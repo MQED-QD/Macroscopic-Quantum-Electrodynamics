@@ -1,0 +1,47 @@
+#plotting configuration for sqrt MSD vs time
+defaults:
+  - hydra: default  # <-- 
+  - _self_
+# Where to put the PNG (Hydra will create a run dir)
+hydra:
+  job:
+    name: plot_msd
+
+# One or more curves to draw on the same axes
+# Each curve: either give absolute 'path', or set 'use_latest_glob' (relative to MQED_ROOT/PWD)
+curves:
+  - label: "Magic-Angle"
+    use_latest_glob: "${oc.env:MQED_ROOT,${oc.env:PWD}}/data/QDyn_cache/silver_stationary_latest.hdf5"  # or using "outputs/Lindblad/.../qdyn_result.hdft"
+    style: "-"         # matplotlib line format
+    lw: 1.5
+  - label: "σ=10"
+    use_latest_glob: "${oc.env:MQED_ROOT,${oc.env:PWD}}/data/QDyn_cache/silver_sigma10_avg_latest.hdf5" # or using "outputs/NHSE_disorder/.../qdyn_disorder_avg.hdft"
+    style: "-"         # e.g., "C1-"
+    lw: 1.5
+
+plot_settings:
+  save_plot: true
+  filename: "silver_middle_msd.png"
+  dpi: 400
+  show: false
+  tight_layout: true
+  grid: true
+  legend: true
+  figsize: [7.5, 5.0]
+
+  # x selection (time). Choose one: x_range_ps or x_index_range
+  x_range_ps: [0.0, 150.0]   # in picoseconds
+  # x_index_range: [0, 500]
+
+  # axis labels, scales, limits
+  xlabel: "t (ps)"            # or "t (ps)" if you keep in ps
+  ylabel: "$MSD$ (nm$^2$)"
+  title: "Silver; Middle Excitation"
+  xscale: linear             # or "log"
+  yscale: linear
+  xlim: null
+  ylim: null
+
+  # optional multiply time axis (e.g., to show ×10^-10 s visually):
+  x_scale_factor: 1.0        # keep 1.0 if you already saved 't_ps' in seconds; use 1e-12 to convert ps→s
+  lw: 1.5
