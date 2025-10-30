@@ -140,20 +140,84 @@ output:
     #Or your own file name.
 ```
 <!-- The output file will be saved to outputs/Dyadic_GF_analytical/%%Year-Month-Day/%%Hour-Min-S/.. -->
+After simulation, either in terminal or in the outputs/Dyadic_GF_analytical/.../Dyadic_GF_analytical.log you will see:
+```bash
+2025-10-24 11:40:02.818 | SUCCESS  | mqed.Dyadic_GF.main:run_simulation:114 - Simulation complete. Output saved to: /.../MacroscopicQED/outputs/Dyadic_GF_analytical/Y-M-D/H-M-S/result_Ag_2_nm.hdf5
+
+```
+For post-process (Simulate QED or RET), the default path of Green's function is:
+```bash
+  ${oc.env:MQED_ROOT,${oc.env:PWD}}/data/GF_cache/result_Ag_2_nm_latest.hdf5
+```
+So you can create a subdirectory data/GF_cache/ and copy-paste the Green's function from the path "/.../MacroscopicQED/outputs/Dyadic_GF_analytical/Y-M-D/H-M-S/result_Ag_2_nm.hdf5".
 
 Lindblad dynamics:
 
 ```bash
 mqed_lindblad simulation.t_ps.start=0.0 simulation.t_ps.stop=150.0 simulation.t_ps.output_step=2e-3
 ```
-You can also change the config files directly in configs/Lindblad/quantum_dynamics.yaml.
+You can also change the config files directly in configs/Lindblad/quantum_dynamics.yaml :
+```bash
+greens:
+  h5_path: ${oc.env:MQED_ROOT,${oc.env:PWD}}/data/GF_cache/result_Ag_2_nm_latest.hdf5 # update as needed
+
+
+# Simulation controls
+simulation:
+# time grid in picoseconds
+  t_ps:
+    start: 0.0
+    stop: 150.0
+    output_step: 5e-3
+
+
+# system
+  Nmol: 100 # number of sites
+  d_nm: 3.0 # lattice spacing (nm)
+
+
+# dipoles / orientation
+  mu_D_debye: 3.8
+  mu_A_debye: 3.8
+  theta_deg: 90.0
+  phi_deg: magic # or a number
+  mode: stationary # or 'disorder'
+```
+The program will read Green's function data from /data/GF_cache/result_Ag_2_nm_latest.hdf5 for calculating dipole-dipole interaction matrix. However, you can also overrite the path for the parameter you are interested by command line:
+```bash
+mqed_lindblad greens.h5_path=YOUR_PATH
+```
+Here the path directly comes from the absolute path after simulation '/.../MacroscopicQED/outputs/Dyadic_GF_analytical/Y-M-D/H-M-S/result_Ag_2_nm.hdf5' as mentioned in Dyadic Green's function simulation. Or you can manually overwrite the yaml file in configs/Lindblad/quantum_dynamics.yaml file.
 
 NHSE dynamics:
-
+The equivalent Non-Hermitian Schodinger equation(NHSE) is implemented here which gives identical result with Lindblad dynamic as we tested. We recommend NHSE for large simulation since it is much faster than simulate density matrix in general.
+You can overwrite the simulation parameter as:
 ```bash
-mqed_nhse simulation.t_ps.start=0.0 simulation.t_ps.stop=150.0 simulation.t_ps.output_step=2e-3
+mqed_nhse simulation.t_ps.start=0.0 simulation.t_ps.stop=100.0 simulation.t_ps.output_step=2e-3
 ```
 You can also change the config files directly in configs/Lindblad/quantum_dynamics.yaml.
+```bash
+simulation:
+# time grid in picoseconds
+  t_ps:
+    start: 0.0
+    stop: 150.0
+    output_step: 5e-3
+
+
+# system
+  Nmol: 100 # number of sites
+  d_nm: 3.0 # lattice spacing (nm)
+
+
+# dipoles / orientation
+  mu_D_debye: 3.8
+  mu_A_debye: 3.8
+  theta_deg: 90.0
+  phi_deg: magic # or a number
+  mode: stationary # or 'disorder'
+  # disorder_sigma_phi_deg: 15.0 # uncomment for disordered orientations
+```
 
 Disorder sweep (multi process):
 
@@ -174,6 +238,76 @@ Plot MSD and √MSD:
 mqed_plot_msd 
 mqed_plot_sqrt_msd 
 ```
+The configs/plots/sqrt_msd.yaml and configs/plots/msd.yaml are configure file for root mean square displacement and mean square displacement, they look identical.
+```bash
+curves:
+  - label: "Magic-Angle"
+    use_latest_glob: "${oc.env:MQED_ROOT,${oc.env:PWD}}/data/QDyn_cache/silver_stationary_latest.hdf5"  
+    style: "-"         # matplotlib line format
+    lw: 1.5
+  - label: "σ=10"
+    use_latest_glob: "${oc.env:MQED_ROOT,${oc.env:PWD}}/data/QDyn_cache/silver_sigma10_avg_latest.hdf5" 
+    style: "-"         # e.g., "C1-"
+    lw: 1.5
+```
+This part gives the curve you want to plot, 'use_latest_glob' gives the path of the file, 'label' gives the label in the final plot, 'lw' is the line-width parameter from plot, 'style' is the line style. The users can change the parameter as they prefer, see: https://matplotlib.org/stable/gallery/lines_bars_and_markers/linestyles.html for line style. 
+
+If the users want to plot single/multiple lines, they can delete/add from the template. 
+```bash
+curves:
+  - label: "YOUR LABEL"
+    use_latest_glob: "YOUR PATH"  
+    style: "YOUR STYLE"         # matplotlib line format
+    lw: 1.5
+# This one is single plot
+
+```bash
+curves:
+  - label: "Magic-Angle"
+    use_latest_glob: "${oc.env:MQED_ROOT,${oc.env:PWD}}/data/QDyn_cache/silver_stationary_latest.hdf5"  
+    style: "-"         # matplotlib line format
+    lw: 1.5
+  - label: "σ=10"
+    use_latest_glob: "${oc.env:MQED_ROOT,${oc.env:PWD}}/data/QDyn_cache/silver_sigma10_avg_latest.hdf5" 
+    style: "-"         # e.g., "C1-"
+    lw: 1.5
+  - label: "YOUR LABEL"
+    use_latest_glob: "YOUR PATH" 
+    style: "YOUR STYLE"         # e.g., "C1-"
+    lw: 1.5
+    #This one is for multiple curves plot
+```
+
+The plot settings can also be changed by users' preferences: (See matplotlib documentation for instruction: https://matplotlib.org/stable/users/index)
+```bash
+plot_settings:
+  save_plot: true
+  filename: "silver_middle_sqrt_msd.png"
+  dpi: 400
+  show: false
+  tight_layout: true
+  grid: true
+  legend: true
+  figsize: [7.5, 5.0]
+
+  # x selection (time). Choose one: x_range_ps or x_index_range
+  x_range_ps: [0.0, 150.0]   # in picoseconds
+  # x_index_range: [0, 500]
+
+  # axis labels, scales, limits
+  xlabel: "t (ps)"            # or "t (ps)" if you keep in ps
+  ylabel: "$\\Delta x$ (nm)"
+  title: "Silver; Middle Excitation"
+  xscale: linear             # or "log"
+  yscale: linear
+  xlim: null
+  ylim: null
+
+  # optional multiply time axis (e.g., to show ×10^-10 s visually):
+  x_scale_factor: 1.0        # keep 1.0 if you already saved 't_ps' in seconds; use 1e-12 to convert ps→s
+  lw: 1.5
+```
+
 
 ---
 
