@@ -42,8 +42,8 @@ def spherical_to_cartesian_dipole(theta_deg, phi_deg):
     vec = np.column_stack((x.ravel(), y.ravel(), z.ravel()))  # (N,3)
     # breakpoint()
     if np.isscalar(theta_deg) and np.isscalar(phi_deg):
-        logger.debug(f"Theta={theta_deg} deg, Phi={phi_deg} deg -> Vector={vec[0]}")
+        # logger.debug(f"Theta={theta_deg} deg, Phi={phi_deg} deg -> Vector={vec[0]}")
         return vec[0]
     else:
-        logger.debug(f"Generated {vec.shape[0]} vectors; first row={vec[0]}")
+        # logger.debug(f"Generated {vec.shape[0]} vectors; first row={vec[0]}")
         return vec
