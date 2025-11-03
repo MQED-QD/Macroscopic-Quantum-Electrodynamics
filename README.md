@@ -370,7 +370,7 @@ MacroscopicQED/
 
 Here is the reference plot for this step:
   <p align="center">
-    <img src="Beta_Test/enhancement_magic_angle_1.864eV.png" alt="Reference result for Step 3" width="400">
+    <img src="Beta_Test/enhancement_magic_angle_1.864eV.png" alt="Reference result for Step 3" width="500">
   </p>
 * **Step4** Run multiple different commands:
 ```bash
@@ -404,7 +404,7 @@ Run `mqed_plot_sqrt_msd` and you should get a file `silver_middle_sqrt_msd.png` 
 
 Here is the reference of the figure:
   <p align="center">
-    <img src="Beta_Test/silver_middle_sqrt_msd.png" alt="Reference result for Step 3" width="400">
+    <img src="Beta_Test/silver_middle_sqrt_msd.png" alt="Reference result for Step 3" width="500">
   </p>
 
 ---
