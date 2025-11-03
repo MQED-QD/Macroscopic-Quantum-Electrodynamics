@@ -2,7 +2,7 @@ from __future__ import annotations
 from pathlib import Path
 from typing import Dict, Tuple, Optional, Union
 import numpy as np
-import h5py
+
 from loguru import logger
 
 import hydra
@@ -10,7 +10,7 @@ from omegaconf import DictConfig, OmegaConf
 from hydra.core.hydra_config import HydraConfig
 
 from joblib import Parallel, delayed
-from qutip import Qobj
+from tqdm import tqdm
 
 # your modules
 from mqed.utils.logging_utils import setup_loggers_hydra_aware
@@ -21,6 +21,7 @@ from mqed.Lindblad.quantum_dynamics import (
 )
 from mqed.utils.dgf_data import load_gf_h5  # you already call load_gf_h5 somewhere
 from mqed.utils.save_hdf5 import save_dx_h5
+from mqed.utils.joblib_track import tqdm_joblib
 
 # ---------- helpers ----------
 
@@ -59,6 +60,7 @@ def _run_one(seed: int,
              Rx_nm: np.ndarray, 
              tlist: np.ndarray) -> np.ndarray:
     # Deep-copy cfg for isolation
+    # logger.info(f" starting realization {seed+1}")
     cfg = OmegaConf.create(OmegaConf.to_container(base_cfg, resolve=True))
 
 
@@ -114,9 +116,17 @@ def run_disorder(cfg: DictConfig) -> None:
     logger.info(f"Running {n} realizations (n_jobs={n_jobs})")
 
     worker = delayed(_run_one)
-    results = Parallel(n_jobs=n_jobs, prefer="processes")(
-        worker(s, cfg, G_slice, energies, Rx_nm, tlist) for s in seeds
-    )
+    # tqdm will update when each job finishes
+    with tqdm_joblib(
+        tqdm(
+            total=len(seeds),
+            desc="NHSE disorder realizations",
+        )
+    ) as progress_bar:
+        results = Parallel(n_jobs=n_jobs, prefer="processes")(
+            worker(s, cfg, G_slice, energies, Rx_nm, tlist)
+            for s in seeds
+        )
     # shape: (n, T)
     stack = np.stack(results, axis=0)
     dx_mean = np.mean(stack, axis=0)
