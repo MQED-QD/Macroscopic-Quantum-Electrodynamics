@@ -11,6 +11,10 @@ hydra:
 greens:
   h5_path: ${oc.env:MQED_ROOT,${oc.env:PWD}}/data/GF_cache/result_Ag_2_nm_latest.hdf5
 
+# Material information
+material:
+  name: silver
+
 # --- Simulation controls ---
 simulation:
   t_ps:
@@ -45,4 +49,4 @@ disorder:
   save_each: false   # true = save per-realization files too
 
 output:
-  filename: qdyn_disorder_avg.hdf5
+  filename: ${material.name}_sigma${simulation.disorder_sigma_phi_deg}_avg_latest.hdf5

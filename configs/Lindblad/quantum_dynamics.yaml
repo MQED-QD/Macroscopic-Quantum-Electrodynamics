@@ -12,6 +12,9 @@ hydra:
 greens:
   h5_path: ${oc.env:MQED_ROOT,${oc.env:PWD}}/data/GF_cache/result_Ag_2_nm_latest.hdf5 # update as needed
 
+#Material information
+material:
+  name: silver
 
 # Simulation controls
 simulation:
@@ -48,4 +51,4 @@ solver:
 
   # Output file (goes under Hydra's run dir)
 output:
-  filename: qdyn_results.hdf5
+  filename: ${material.name}_stationary_latest.hdf5
