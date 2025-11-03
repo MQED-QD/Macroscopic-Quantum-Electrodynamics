@@ -373,13 +373,16 @@ Here is the reference plot for this step:
     <img src="Beta_Test/enhancement_magic_angle_1.864eV.png" alt="Reference result for Step 3" width="500">
   </p>
 * **Step4** Run multiple different commands:
+
 ```bash
 mqed_nhse_disorder simulation.disorder_sigma_phi_deg=10
 mqed_nhse_disorder simulation.disorder_sigma_phi_deg=30
 mqed_nhse_disorder simulation.disorder_sigma_phi_deg=50
 ```
+
 After those commands, there will be multiple files name as `silver_sigma${disorder_sigma_phi_deg}_avg_latest.hdf5` (The **disorder_sigma_phi_deg** is the value of your input, i.e, **3,10,30,50**)generated under the subdirectories `outputs/NHSE/Y-M-D/H-M-S/`. The file path will show up in the terminal or you can find them under the file `outputs/NHSE/Y-M-D/H-M-S/NHSE_disorder.log`. Copy-paste those `silver_sigma${disorder_sigma_phi_deg}_avg_latest.hdf5` into subdirectory `data/QDyn_cache/`.
 * **Step5:** After **Step4**, you should have `silver_stationary_latest.hdf5` and multiple `silver_sigma${disorder_sigma_phi_deg}_avg_latest.hdf5` files under the `data/QDyn_cache/`. Make sure you have following `curves` part in the `configs/plots/sqrt_msd.yaml`:
+
 ```bash
 curves:
   - label: "Magic-Angle"
