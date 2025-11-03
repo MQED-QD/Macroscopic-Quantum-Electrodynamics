@@ -104,7 +104,7 @@ This package installs the following command‑line tools (from `setup.py` entry 
 
 ### Examples
 
-Run a Dyadic GF simulation with defaults:
+Run a **Dyadic Green's function simulation on planar surface** with defaults:
 
 ```bash
 mqed_GF
@@ -125,7 +125,7 @@ or:
 mqed_GF simulation.energy_eV=[1.0,1.5,2.0]
 #This will simulate 3 energy points as (1.0,1.5,2.0) eV
 ```
-You can also change other simulation parameters in the configs/Dyadic_GF/GF_analytical.yaml:
+You can also change other simulation parameters in the `configs/Dyadic_GF/GF_analytical.yaml`:
 ```bash
     position:
         zD: 2.0e-9 # The height of donor at z-axis
@@ -149,9 +149,9 @@ For post-process (Simulate QED or RET), the default path of Green's function is:
 ```bash
   ${oc.env:MQED_ROOT,${oc.env:PWD}}/data/GF_cache/result_Ag_2_nm_latest.hdf5
 ```
-So you can create a subdirectory data/GF_cache/ and copy-paste the Green's function from the path `/.../MacroscopicQED/outputs/Dyadic_GF_analytical/Y-M-D/H-M-S/result_Ag_2_nm.hdf5`.
+So you can create a subdirectory `data/GF_cache/` and copy-paste the hdf5 file from the path `/.../MacroscopicQED/outputs/Dyadic_GF_analytical/Y-M-D/H-M-S/result_Ag_2_nm.hdf5`.
 
-Lindblad dynamics:
+**Lindblad dynamics:**
 
 ```bash
 mqed_lindblad simulation.t_ps.start=0.0 simulation.t_ps.stop=150.0 simulation.t_ps.output_step=2e-3
@@ -189,7 +189,7 @@ mqed_lindblad greens.h5_path=YOUR_PATH
 ```
 Here the path directly comes from the absolute path after simulation `/.../MacroscopicQED/outputs/Dyadic_GF_analytical/Y-M-D/H-M-S/result_Ag_2_nm.hdf5` as mentioned in Dyadic Green's function simulation. Or you can manually overwrite the yaml file in configs/Lindblad/quantum_dynamics.yaml file.
 
-NHSE dynamics:
+**NHSE dynamics:**
 The equivalent **Non-Hermitian Schodinger equation(NHSE)** is implemented here which gives identical result with Lindblad dynamic as we tested. **We recommend NHSE for large simulation** since it is **much faster** than simulate density matrix in general.
 You can overwrite the simulation parameter as:
 ```bash
