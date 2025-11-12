@@ -1,0 +1,61 @@
+name: mqed
+channels:
+  # Conda-forge must be first for Meep and most scientific packages
+  - conda-forge
+  - defaults
+dependencies:
+  # anchor the interpreter
+  - python
+
+  # numerics / data
+  - numpy
+  - scipy
+  - pandas
+  - h5py
+  - lmdb
+  - no-mkl # Essential on Windows to prevent MKL/OpenBLAS conflicts
+
+  # viz / notebooks
+  - matplotlib
+  - seaborn
+  - jupyter
+  - pillow
+  - tqdm
+  - pyqt
+
+  # quantum / simulation stack
+  - qutip
+  - pymeep       # Main Meep package
+  # The components below are usually pulled in by pymeep, but listing them
+  # might help the solver find the correct build for Windows dependencies.
+  # - mpb
+  # - h5utils
+  # - harminv
+  - fftw
+  - gsl
+  - cairo
+
+  # mpi: Use Microsoft MPI (msmpi) which is the standard on native Windows
+  - msmpi
+  - mpi4py
+
+  # testing
+  - pytest
+
+  # pip dependencies (remain unchanged)
+  - pip>=23
+  - pip:
+    - hydra-core
+    - hydra-colorlog
+    - hydra-optuna-sweeper
+    - optuna
+    - rootutils
+    - gitpython
+    - loguru
+    - sphinx
+    - sphinx-rtd-theme
+    - rich
+    - pyvista[all]
+    - sqlalchemy
+    - alembic
+    - openpyxl
