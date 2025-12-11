@@ -33,6 +33,9 @@ dependencies:
   - gsl
   - cairo
 
+  # multiprocess
+  - joblib
+
   # mpi
   - openmpi
   - mpi4py
