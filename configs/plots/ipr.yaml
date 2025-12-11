@@ -1,0 +1,52 @@
+defaults:
+  - hydra: default
+  - _self_
+
+hydra:
+  job:
+    name: plot_ipr
+
+curves:
+  # Example stationary vs disorder-avg
+  - label: "Fresnel (stationary)"
+    use_latest_glob: "${oc.env:MQED_ROOT,${hydra:runtime.cwd}}/data/QDyn_cache/Frensel_silver_stationary_665.hdf5"
+    style: "-"
+    lw: 1.6
+  - label: "BEM (stationary)"
+    use_latest_glob: "${oc.env:MQED_ROOT,${hydra:runtime.cwd}}/data/QDyn_cache/BEM_silver_stationary_665.hdf5"
+    style: "--"
+    lw: 1.6
+  # - label: "σ=10 disorder"
+  #   use_latest_glob: "${oc.env:MQED_ROOT,${hydra:runtime.cwd}}/data/QDyn_cache/silver_sigma10_avg_latest.hdf5"
+  #   style: "C1-"
+  #   lw: 1.6
+
+plot_settings:
+  save_plot: true
+  filename: "silver_middle_ipr_comparison.png"
+  dpi: 400
+  show: false
+  tight_layout: true
+  grid: true
+  legend: true
+  figsize: [7.5, 5.0]
+
+  # Choose by indices OR by time (ps)
+  x_range_ps: [0.0, 150.0]
+  # x_index_range: [0, 500]
+
+  xlabel: "t (ps)"
+  ylabel: "IPR (site basis)"
+  title: "Silver; Middle Excitation — IPR"
+  xscale: linear
+  yscale: linear
+  xlim: null
+  ylim: null
+
+  # If your file stores ipr_std (disorder avg), shade ±1σ
+  shade_std: true
+
+  # Optional time unit conversion (keep 1.0 if already ps)
+  x_scale_factor: 1.0
+
+  lw: 1.6
