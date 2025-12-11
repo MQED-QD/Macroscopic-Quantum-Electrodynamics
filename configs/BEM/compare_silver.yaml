@@ -1,0 +1,117 @@
+defaults:
+  - _self_
+  - hydra: default  # <-- 
+
+hydra:
+  job:
+    name: compare_ez
+log_file: ${hydra:runtime.output_dir}/${hydra.job.name}.log
+
+paths:
+  # lets you override with MQED_ROOT=/abs/path/to/repo
+  root: ${oc.env:MQED_ROOT,${hydra:runtime.cwd}}
+  data_dir: ${paths.root}/mqed/BEM
+
+  dgf_h5: ${paths.data_dir}/Frensel_result/result_Ag_2_nm.hdf5
+  bem_plane_xlsx: ${paths.data_dir}/BEM_result/dipole_silver_2nm_results.xlsx
+  bem_vacuum_xlsx: ${paths.data_dir}/BEM_result/dipole_vacuum_2nm_results.xlsx
+
+
+dipole_frequency: 1.864  # example value (your units)
+
+data:
+  x_key: Rx_nm
+  energy_index: 0
+
+bem:
+  sheet: FieldLine
+  re_col: Re_Ez
+  im_col: Im_Ez
+
+dipoles:
+  donor: {theta_deg: 0.0, phi_deg: 0.0}
+  acceptor: {theta_deg: 0.0, phi_deg: 0.0}
+
+test:
+  enabled: true
+  rtol: 1e-3
+  atol: 1e-6
+
+plot:
+  dpi: 140
+  figsize: [11, 6]
+  save: True
+  save_path: silver_ez_enhancement.png
+
+  rcParams:
+    font.size: 18
+    axes.labelsize: 26
+    axes.titlesize: 22
+    legend.fontsize: 22
+    xtick.labelsize: 18
+    ytick.labelsize: 18
+
+  axes:
+    title: " $\\omega_0 = {dipole_frequency} ~\\mathrm{{eV}}$"
+    xlabel: "Distance $R_x$ (nm)"
+    ylabel: "$Enhancement(Normalized)$"
+    xlim: [0, 100]
+    ylim: null
+    grid: false
+    spine_width: 1.2
+    yscale: "log" # optional, can be "linear" or "log"
+
+    ticks:
+      direction: "in"
+      top: true
+      right: true
+      labelsize: 18
+      length: 6
+      width: 1.2
+
+  legend:
+    loc: "best"
+    # bbox_to_anchor: [1.02, 0.5]
+    frameon: true
+    fancybox: false
+    framealpha: 1.0
+    fontsize: 22
+    edgecolor: "0.5"
+
+  # what to draw first/last
+  series_order: [bem_real, bem_imag, impl_real, impl_imag]
+
+  series:
+    bem_real:
+      source: "bem_real"
+      label: "$V/V^{0}$ (BEM)"
+      linestyle: "None"
+      marker: "o"
+      markersize: 7
+      markerfacecolor: "none"
+      markeredgewidth: 1.6
+      color: "m"
+
+    bem_imag:
+      source: "bem_imag"
+      label: "$\\Gamma/\\Gamma^{0}$ (BEM)"
+      linestyle: "None"
+      marker: "s"
+      markersize: 7
+      markerfacecolor: "none"
+      markeredgewidth: 1.6
+      color: "c"
+
+    impl_real:
+      source: "impl_real"
+      label: "$V/V^{0}$ (Analytical)"
+      linestyle: "-"
+      linewidth: 2.7
+      color: "r"
+
+    impl_imag:
+      source: "impl_imag"
+      label: "$\\Gamma/\\Gamma^{0}$ (Analytical)"
+      linestyle: "-"
+      linewidth: 2.7
+      color: "b"

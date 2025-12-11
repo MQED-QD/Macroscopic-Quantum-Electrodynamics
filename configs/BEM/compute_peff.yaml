@@ -1,0 +1,31 @@
+defaults:
+  - _self_
+  - hydra: default  # <-- 
+
+hydra:
+  job:
+    name: compute_peff
+log_file: ${hydra:runtime.output_dir}/${hydra.job.name}.log
+
+io:
+  root: ${oc.env:MQED_ROOT,${hydra:runtime.cwd}}
+  data_dir: ${io.root}/mqed/BEM
+  xlsx_path: ${io.data_dir}/BEM_GF_sample/dipole_vacuum_2nm_GF_30nm.xlsx
+  sheet: FieldLine
+  output_csv: peff_vs_lambda.csv
+
+sim:
+  lambdas_nm: [665.0]          # can be a list
+  y_nm: 0.0
+  zD_nm: 2.0
+  zA_nm: 3.0                  # use zD+1 nm for calibration to avoid symmetry zeros
+  pdir: [0.0, 0.0, 1.0]
+
+dipole:
+  p_test_Cm: 1.0              # SI test dipole used in analytic E0
+  # alternatively you could set:
+  # p_test_debye: 1.0
+
+fit:
+  drop_small_E0: true
+  drop_threshold_rel: 1.0e-12
