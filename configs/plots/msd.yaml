@@ -10,26 +10,37 @@ hydra:
 # One or more curves to draw on the same axes
 # Each curve: either give absolute 'path', or set 'use_latest_glob' (relative to MQED_ROOT/PWD)
 curves:
-  - label: "Magic-Angle"
-    use_latest_glob: "${oc.env:MQED_ROOT,${hydra:runtime.cwd}}/data/QDyn_cache/silver_stationary_latest.hdf5"  # or using "outputs/Lindblad/.../qdyn_result.hdft"
+  # - label: "Magic-Angle"
+  #   use_latest_glob: "${oc.env:MQED_ROOT,${hydra:runtime.cwd}}/data/QDyn_cache/silver_stationary_latest.hdf5"  # or using "outputs/Lindblad/.../qdyn_result.hdft"
+  #   style: "-"         # matplotlib line format
+  #   lw: 1.5
+  
+  # - label: "σ=10"
+  #   use_latest_glob: "${oc.env:MQED_ROOT,${hydra:runtime.cwd}}/data/QDyn_cache/silver_sigma10_avg_latest.hdf5" # or using "outputs/NHSE_disorder/.../qdyn_disorder_avg.hdft"
+  #   style: "-"         # e.g., "C1-"
+  #   lw: 1.5
+  # - label: "σ=30"
+  #   use_latest_glob: "${oc.env:MQED_ROOT,${hydra:runtime.cwd}}/data/QDyn_cache/silver_sigma30_avg_latest.hdf5" # or using "outputs/NHSE_disorder/.../qdyn_disorder_avg.hdft"
+  #   style: "-"         # e.g., "C1-"
+  #   lw: 1.5
+  # - label: "σ=50"
+  #   use_latest_glob: "${oc.env:MQED_ROOT,${hydra:runtime.cwd}}/data/QDyn_cache/silver_sigma50_avg_latest.hdf5" # or using "outputs/NHSE_disorder/.../qdyn_disorder_avg.hdft"
+  #   style: "-"         # e.g., "C1-"
+  #   lw: 1.5
+
+
+  - label: "Frensel"
+    use_latest_glob: "${oc.env:MQED_ROOT,${hydra:runtime.cwd}}/data/QDyn_cache/Frensel_silver_stationary_665.hdf5"  # or using "outputs/Lindblad/.../qdyn_result.hdft"
     style: "-"         # matplotlib line format
     lw: 1.5
-  - label: "σ=10"
-    use_latest_glob: "${oc.env:MQED_ROOT,${hydra:runtime.cwd}}/data/QDyn_cache/silver_sigma10_avg_latest.hdf5" # or using "outputs/NHSE_disorder/.../qdyn_disorder_avg.hdft"
-    style: "-"         # e.g., "C1-"
-    lw: 1.5
-  - label: "σ=30"
-    use_latest_glob: "${oc.env:MQED_ROOT,${hydra:runtime.cwd}}/data/QDyn_cache/silver_sigma30_avg_latest.hdf5" # or using "outputs/NHSE_disorder/.../qdyn_disorder_avg.hdft"
-    style: "-"         # e.g., "C1-"
-    lw: 1.5
-  - label: "σ=50"
-    use_latest_glob: "${oc.env:MQED_ROOT,${hydra:runtime.cwd}}/data/QDyn_cache/silver_sigma50_avg_latest.hdf5" # or using "outputs/NHSE_disorder/.../qdyn_disorder_avg.hdft"
-    style: "-"         # e.g., "C1-"
+  - label: "BEM"
+    use_latest_glob: "${oc.env:MQED_ROOT,${hydra:runtime.cwd}}/data/QDyn_cache/BEM_silver_stationary_665.hdf5"  # or using "outputs/Lindblad/.../qdyn_result.hdft"
+    style: "--"         # matplotlib line format
     lw: 1.5
 
 plot_settings:
   save_plot: true
-  filename: "silver_middle_msd.png"
+  filename: "silver_middle_msd_comparison.png"
   dpi: 400
   show: false
   tight_layout: true
