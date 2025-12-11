@@ -13,7 +13,7 @@ from mqed.Lindblad.quantum_dynamics import SimulationConfig, LindbladDynamics, N
 from mqed.utils.dgf_data import load_gf_h5
 from mqed.utils.logging_utils import setup_loggers_hydra_aware
 from hydra.core.hydra_config import HydraConfig
-from mqed.Lindblad.quantum_operator import msd_operator, position_operator
+from mqed.Lindblad.quantum_operator import msd_operator, position_operator, ipr_callable
 from mqed.utils.save_hdf5 import save_dx_h5
 
 def app_run(cfg:DictConfig, output_dir: Optional[Path]=None):
@@ -71,7 +71,8 @@ def app_run(cfg:DictConfig, output_dir: Optional[Path]=None):
 
 
     e_ops = {"X_shift": position_operator(sim_cfg.Nmol + 1, sim_cfg.d_nm, sim_cfg.Nmol, cfg.initial_state.site_index),
-            "X_shift2": msd_operator(sim_cfg.Nmol + 1, sim_cfg.d_nm, sim_cfg.Nmol, cfg.initial_state.site_index)}
+            "X_shift2": msd_operator(sim_cfg.Nmol + 1, sim_cfg.d_nm, sim_cfg.Nmol, cfg.initial_state.site_index),
+            "IPR_site": lambda t, st: ipr_callable(t, st, Nmol=sim_cfg.Nmol),}
 
 
     # 5) Evolve
