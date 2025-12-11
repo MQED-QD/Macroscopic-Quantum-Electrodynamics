@@ -39,9 +39,9 @@ simulation:
     zD_nm: 2 # Key for name
     zA: 2.0e-9
     Rx_nm: # New section to define the range of horizontal distances
-      start: 1.0
+      start: 0.0
       stop: 500.0
-      points: 500 # This will give you points 1, 2, 3, ..., 1000
+      points: 501 # This will give you points 1, 2, 3, ..., 1000
 
 output:
   filename: "result_${simulation.material}_${simulation.position.zD_nm}_nm.hdf5"
