@@ -27,7 +27,10 @@ def read_bem_dyadic(xlsx_path: str, sheet: str)-> tuple[np.ndarray, np.ndarray]:
     Returns:
         tuple: (Rx_nm (N,), G (N,3,3) complex) dyadic.
     """
-    df = pd.read_excel(xlsx_path, sheet_name=sheet)
+    try:
+        df = pd.read_excel(xlsx_path, sheet_name=sheet)
+    except Exception as e:
+        raise FileNotFoundError(f"Failed to read Excel file {xlsx_path}, sheet {sheet}: {e}")
     rx = df["x_nm"].to_numpy(float)
 
     def ccol(name):
@@ -48,7 +51,10 @@ def read_purcell_sheet(xlsx_path: str, sheet="G_self") -> tuple[float, float, fl
     Returns:
         tuple: (lambda_nm, F_x, F_y, F_z)
     '''
-    df = pd.read_excel(xlsx_path, sheet_name=sheet)
+    try:
+        df = pd.read_excel(xlsx_path, sheet_name=sheet)
+    except Exception as e:
+        raise FileNotFoundError(f"Failed to read Excel file {xlsx_path}, sheet {sheet}: {e}")
     lam_nm = float(df["lambda_nm"].iloc[0])
     Fx = float(df["Purcell_x"].iloc[0])
     Fy = float(df["Purcell_y"].iloc[0])
