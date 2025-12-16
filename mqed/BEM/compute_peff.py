@@ -6,7 +6,9 @@ from omegaconf import DictConfig
 from pathlib import Path
 
 from mqed.utils.SI_unit import c,D2CMM,eps0 
-from mqed.Dyadic_GF.GF_analytical import Greens_function_analytical
+from mqed.Dyadic_GF.GF_Sommerfeld import Greens_function_analytical
+from mqed.Dyadic_GF.main import build_grid
+from mqed.utils.logging_utils import setup_loggers_hydra_aware
 from loguru import logger
 
 
@@ -68,6 +70,7 @@ def compute_E0_from_vacuum_G0(calculator, omega, x_m, y_m, zD_m, zA_m, pvec_Cm):
 
 @hydra.main(version_base=None, config_path="../../configs/BEM", config_name="compute_peff")
 def main(cfg: DictConfig):
+    setup_loggers_hydra_aware()
     # ---- read BEM field data ----
     output_dir = Path(HydraConfig.get().runtime.output_dir)
     
@@ -95,11 +98,13 @@ def main(cfg: DictConfig):
     rows = []
 
     logger.info("Computing analytical vacuum fields and fitting p_eff...")
-    for lam_nm in cfg.sim.lambdas_nm:
+    
+    lambdas_nm = build_grid(cfg.sim.lambdas_nm)
+    logger.info(f"Using wavelengths (nm): {lambdas_nm}")
+    for lam_nm in lambdas_nm:
         omega = omega_from_lambda_nm(float(lam_nm))
 
         # create your analytic calculator
-        # You said you already do: Greens_function_analytical(omega=omega, metal_epsi=epsilon)
         # For vacuum_component, metal_epsi is irrelevant; pass anything sensible.
 
         calculator = Greens_function_analytical(omega=omega, metal_epsi=1.0 + 0.0j)
@@ -136,7 +141,7 @@ def main(cfg: DictConfig):
 
     out = pd.DataFrame(rows)
     out.to_csv(output_dir / cfg.io.output_csv, index=False)
-    logger.success(f"Saved p_eff results to {output_dir.absolute()}")
+    logger.success(f"Saved p_eff results to {(output_dir / cfg.io.output_csv).absolute()}")
     print(out)
 
 if __name__ == "__main__":
