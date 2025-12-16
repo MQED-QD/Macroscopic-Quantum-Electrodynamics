@@ -35,6 +35,7 @@ setup(
             "mqed_BEM_compare_dyadic = mqed.BEM.compare_BEM_dyadic:main",
             "mqed_BEM_reconstruct_GF = mqed.BEM.reconstruct_GF:main",
             "mqed_plot_IPR = mqed.plotting.plot_ipr:main",
+            "mqed_plot_PR = mqed.plotting.plot_pr:main",
         ]
     },
 
