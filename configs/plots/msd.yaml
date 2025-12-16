@@ -30,22 +30,30 @@ curves:
 
 
   - label: "Frensel"
-    use_latest_glob: "${oc.env:MQED_ROOT,${hydra:runtime.cwd}}/data/QDyn_cache/Frensel_silver_stationary_665.hdf5"  # or using "outputs/Lindblad/.../qdyn_result.hdft"
+    use_latest_glob: "${oc.env:MQED_ROOT,${hydra:runtime.cwd}}/data/QDyn_cache/Frensel_silver_stationary_665nm.hdf5"  # or using "outputs/Lindblad/.../qdyn_result.hdft"
     style: "-"         # matplotlib line format
     lw: 1.5
   - label: "BEM"
-    use_latest_glob: "${oc.env:MQED_ROOT,${hydra:runtime.cwd}}/data/QDyn_cache/BEM_silver_stationary_665.hdf5"  # or using "outputs/Lindblad/.../qdyn_result.hdft"
+    use_latest_glob: "${oc.env:MQED_ROOT,${hydra:runtime.cwd}}/data/QDyn_cache/BEM_silver_stationary_665nm.hdf5"  # or using "outputs/Lindblad/.../qdyn_result.hdft"
     style: "--"         # matplotlib line format
     lw: 1.5
 
+  # - label: "nanorod BEM"
+  #   use_latest_glob: "${oc.env:MQED_ROOT,${hydra:runtime.cwd}}/data/QDyn_cache/BEM_silver_nanorod_stationary_665nm.hdf5"  # or using "outputs/Lindblad/.../qdyn_result.hdft"
+  #   style: "-"         # matplotlib line format
+  #   lw: 1.5
+
 plot_settings:
   save_plot: true
-  filename: "silver_middle_msd_comparison.png"
+  geometry: planar # or other geometries, 'sphere', 'planar', etc.
+  material: silver
+  excitation_position_nm: middle # or 'top', 'bottom', 'middle', etc.
+  filename: "${plot_settings.geometry}_${plot_settings.material}_${plot_settings.excitation_position_nm}_msd.png"
   dpi: 400
   show: false
   tight_layout: true
-  grid: true
-  legend: true
+  grid: false # Enable grid for true, or False to disable
+  legend: true # set to true to show legend
   figsize: [7.5, 5.0]
 
   # x selection (time). Choose one: x_range_ps or x_index_range
@@ -55,7 +63,7 @@ plot_settings:
   # axis labels, scales, limits
   xlabel: "t (ps)"            # or "t (ps)" if you keep in ps
   ylabel: "$MSD$ (nm$^2$)"
-  title: "Silver; Middle Excitation"
+  title: null # or make your own title, "Silver; Middle Excitation"
   xscale: linear             # or "log"
   yscale: linear
   xlim: null

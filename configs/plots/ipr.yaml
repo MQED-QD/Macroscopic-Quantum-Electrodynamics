@@ -9,11 +9,11 @@ hydra:
 curves:
   # Example stationary vs disorder-avg
   - label: "Fresnel (stationary)"
-    use_latest_glob: "${oc.env:MQED_ROOT,${hydra:runtime.cwd}}/data/QDyn_cache/Frensel_silver_stationary_665.hdf5"
+    use_latest_glob: "${oc.env:MQED_ROOT,${hydra:runtime.cwd}}/data/QDyn_cache/Frensel_silver_stationary_665nm.hdf5"
     style: "-"
     lw: 1.6
   - label: "BEM (stationary)"
-    use_latest_glob: "${oc.env:MQED_ROOT,${hydra:runtime.cwd}}/data/QDyn_cache/BEM_silver_stationary_665.hdf5"
+    use_latest_glob: "${oc.env:MQED_ROOT,${hydra:runtime.cwd}}/data/QDyn_cache/BEM_silver_stationary_665nm.hdf5"
     style: "--"
     lw: 1.6
   # - label: "σ=10 disorder"
@@ -23,11 +23,14 @@ curves:
 
 plot_settings:
   save_plot: true
-  filename: "silver_middle_ipr_comparison.png"
+  geometry: planar # or other geometries, 'sphere', 'nanorod', etc.
+  material: silver
+  excitation_position_nm: middle # or 'top', 'bottom', 'middle', etc.
+  filename: "${plot_settings.geometry}_${plot_settings.material}_${plot_settings.excitation_position_nm}_ipr_comparison.png"
   dpi: 400
   show: false
   tight_layout: true
-  grid: true
+  grid: false # Enable grid for true, or False to disable
   legend: true
   figsize: [7.5, 5.0]
 
@@ -37,7 +40,7 @@ plot_settings:
 
   xlabel: "t (ps)"
   ylabel: "IPR (site basis)"
-  title: "Silver; Middle Excitation — IPR"
+  title: null # or choose your own title, "Silver; Middle Excitation — IPR"
   xscale: linear
   yscale: linear
   xlim: null

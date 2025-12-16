@@ -1,0 +1,56 @@
+defaults:
+  - hydra: default
+  - _self_
+
+hydra:
+  job:
+    name: plot_ipr
+
+curves:
+  # Example stationary vs disorder-avg
+  # - label: "Fresnel (stationary)"
+  #   use_latest_glob: "${oc.env:MQED_ROOT,${hydra:runtime.cwd}}/data/QDyn_cache/Frensel_silver_stationary_665nm.hdf5"
+  #   style: "-"
+  #   lw: 1.6
+  # - label: "BEM (stationary)"
+  #   use_latest_glob: "${oc.env:MQED_ROOT,${hydra:runtime.cwd}}/data/QDyn_cache/BEM_silver_stationary_665nm.hdf5"
+  #   style: "--"
+  #   lw: 1.6
+
+  - label: "nanorod BEM"
+    use_latest_glob: "${oc.env:MQED_ROOT,${hydra:runtime.cwd}}/data/QDyn_cache/BEM_silver_nanorod_stationary_665nm.hdf5"  # or using "outputs/Lindblad/.../qdyn_result.hdft"
+    style: "-"         # matplotlib line format
+    lw: 1.5
+
+plot_settings:
+  save_plot: true
+  geometry: nanorod # or other geometries, 'sphere', 'nanorod', etc.
+  material: silver
+  excitation_position_nm: middle # or 'top', 'bottom', 'middle', etc.
+  filename: "${plot_settings.geometry}_${plot_settings.material}_${plot_settings.excitation_position_nm}_pr_comparison.png"
+  dpi: 400
+  show: false
+  tight_layout: true
+  grid: false # Enable grid for true, or False to disable
+  legend: false # set to true to show legend
+  figsize: [7.5, 5.0]
+
+  # Choose by indices OR by time (ps)
+  x_range_ps: [0.0, 150.0]
+  # x_index_range: [0, 500]
+
+  xlabel: "t (ps)"
+  ylabel: "PR (site basis)"
+  title: null # or choose your own title, "Silver; Middle Excitation — PR"
+  xscale: linear
+  yscale: linear
+  xlim: null
+  ylim: null
+
+  # If your file stores ipr_std (disorder avg), shade ±1σ
+  shade_std: true
+
+  # Optional time unit conversion (keep 1.0 if already ps)
+  x_scale_factor: 1.0
+
+  lw: 1.6
