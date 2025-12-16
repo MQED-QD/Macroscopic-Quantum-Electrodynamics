@@ -12,11 +12,11 @@ parameters:
   lambda_nm: 665             # wavelength in nm
   zD_nm: 2.0
   zA_nm: 2.0
-  geometry: 'planar'
+  geometry: 'nanorod' # or 'nanorod', 'sphere', match with your simulation to avoid confusion.
   material: 'Ag'
 
 io:
-  xlsx_path: ${oc.env:MQED_ROOT,${hydra:runtime.cwd}}/data/BEM_cache/dipole_silver_2nm_GF_${parameters.lambda_nm}.xlsx
-  peff_path: ${oc.env:MQED_ROOT,${hydra:runtime.cwd}}/data/BEM_cache/peff_vs_lambda_${parameters.lambda_nm}.csv
+  xlsx_path: ${oc.env:MQED_ROOT,${hydra:runtime.cwd}}/data/BEM_cache/YOUR_FILE.xlsx
+  peff_path: ${oc.env:MQED_ROOT,${hydra:runtime.cwd}}/data/BEM_cache/YOUR_FILE.csv
 
   output_file: BEM_GF_${parameters.geometry}_${parameters.material}_${parameters.lambda_nm}.hdf5
