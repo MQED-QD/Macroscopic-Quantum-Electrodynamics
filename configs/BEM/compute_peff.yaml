@@ -10,12 +10,13 @@ log_file: ${hydra:runtime.output_dir}/${hydra.job.name}.log
 io:
   root: ${oc.env:MQED_ROOT,${hydra:runtime.cwd}}
   data_dir: ${io.root}/mqed/BEM
-  xlsx_path: ${io.data_dir}/BEM_GF_sample/dipole_vacuum_2nm_GF_30nm.xlsx
+  xlsx_path: ${io.data_dir}/BEM_GF_sample/${sim.lambdas_nm}nm/dipole_vacuum_2nm_GF_${sim.Rx_min_nm}nm_${sim.lambdas_nm}nm.xlsx
   sheet: FieldLine
-  output_csv: peff_vs_lambda.csv
+  output_csv: peff_vs_lambda_${sim.lambdas_nm}nm_${sim.Rx_min_nm}nm.csv
 
 sim:
-  lambdas_nm: [665.0]          # can be a list
+  Rx_min_nm: 5
+  lambdas_nm: 665          # can be a list, e.g., [600.0, 665.0, 700.0]; single value: 665; or range dict {start:600.0, stop:700.0, points:11}
   y_nm: 0.0
   zD_nm: 2.0
   zA_nm: 3.0                  # use zD+1 nm for calibration to avoid symmetry zeros
