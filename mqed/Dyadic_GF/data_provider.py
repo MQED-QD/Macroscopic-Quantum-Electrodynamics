@@ -33,6 +33,7 @@ class DataProvider:
             excel_cfg = self.config.excel_config
             filepath = resources.files('mqed') / excel_cfg.filepath
             logger.info(f"Loading dispersive material data from: {filepath}")
+            logger.info(f"Excel sheet name: {excel_cfg.sheet_name}")
 
             df = pd.read_excel(filepath, sheet_name=excel_cfg.sheet_name)
             
