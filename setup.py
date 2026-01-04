@@ -27,7 +27,7 @@ setup(
             "mqed_FE = mqed.analysis.FE:main",
             "mqed_lindblad = mqed.Lindblad.run_quantum_dynamics:mqed_lindblad",
             "mqed_nhse = mqed.Lindblad.run_quantum_dynamics:mqed_nhse",
-            "mqed_nhse_disorder = mqed.Lindblad.run_disorder:run_disorder",
+            "mqed_nhse_disorder = mqed.disorder.run_disorder:run_disorder",
             "mqed_plot_sqrt_msd = mqed.plotting.plot_sqrt_msd:main",
             "mqed_plot_msd = mqed.plotting.plot_msd:main",
             "mqed_BEM_compare = mqed.BEM.compare_const:main",
