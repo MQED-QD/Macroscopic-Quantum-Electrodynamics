@@ -10,6 +10,8 @@ from loguru import logger
 from mqed.utils.orientation import spherical_to_cartesian_dipole, resolve_angle_deg # NEW IMPORT
 from mqed.utils.dgf_data import load_gf_h5 # NEW IMPORT
 from mqed.utils.logging_utils import setup_loggers_hydra_aware
+from mqed.utils.enhancement import compute_enhancement
+
 from pathlib import Path
 from hydra.utils import get_original_cwd # <-- IMPORT THIS
 from hydra.core.hydra_config import HydraConfig
@@ -18,35 +20,8 @@ HBAR_EVS = 6.582119569e-16 # Planck's constant in eV*s
 C_CMS = 2.99792458e10      # Speed of light in cm/s
 eV_to_J = 1.60218e-19 # eV to Joules conversion
 
-def compute_enhancement(p_donor,p_acceptor,g_total, g_vac):
-    """
-    Computes the enhancement factor for Resonance Energy Transfer (RET)
-    given donor and acceptor dipole orientations and Green's functions.
 
-    Args:
-        p_donot (np.ndarray): Donor dipole orientation (3-element array).
-        p_acceptor (np.ndarray): Acceptor dipole orientation (3-element array).
-        g_total (np.ndarray): Total Green's function array of shape (M, N, 3, 3).
-        g_vac (np.ndarray): Vacuum Green's function array of shape (M, N, 3, 3).
-    Returns:
-        gamma (np.ndarray): Enhancement factor array of shape (M, N).
-        E_enhance_real (np.ndarray): Real part of field enhancement array of shape (M, N).
-        E_enhance_imag (np.ndarray): Imaginary part of field enhancement array of shape (M, N).
-    """
-    # Project the Green's functions onto the dipole orientations
-    # This is the NumPy equivalent of the MATLAB code
-    # g_da = p_A^T * G * p_D
-    g_da_total = np.einsum('i,...ij,j->...', p_acceptor, g_total, p_donor)
-    g_da_vac = np.einsum('i,...ij,j->...', p_acceptor, g_vac, p_donor)
-
-    # Calculate enhancement factor
-    gamma = np.abs(g_da_total / g_da_vac)**2
-    E_enhance_real = np.real(g_da_total)/np.real(g_da_vac)
-    E_enhance_imag = np.imag(g_da_total)/np.imag(g_da_vac)
-    return gamma, E_enhance_real, E_enhance_imag
-
-
-def calculate_enhancement(cfg: DictConfig):
+def plot_RET(cfg: DictConfig):
     """
     Loads simulation data and calculates the Resonance Energy Transfer (RET)
     enhancement factor.
@@ -182,7 +157,7 @@ def calculate_enhancement(cfg: DictConfig):
 @hydra.main(config_path="../../configs/analysis", config_name="RET", version_base=None)
 def main(cfg: DictConfig) -> None:
     # 1. Get the output directory managed by Hydra
-    calculate_enhancement(cfg)
+    plot_RET(cfg)
 
 
 if __name__ == "__main__":
