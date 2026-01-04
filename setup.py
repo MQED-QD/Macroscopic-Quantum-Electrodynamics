@@ -24,6 +24,7 @@ setup(
         "console_scripts": [
             "mqed_GF_Sommerfeld = mqed.Dyadic_GF.main:run_simulation",
             "mqed_RET = mqed.analysis.RET:main",
+            "mqed_FE = mqed.analysis.FE:main",
             "mqed_lindblad = mqed.Lindblad.run_quantum_dynamics:mqed_lindblad",
             "mqed_nhse = mqed.Lindblad.run_quantum_dynamics:mqed_nhse",
             "mqed_nhse_disorder = mqed.Lindblad.run_disorder:run_disorder",
