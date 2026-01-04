@@ -186,7 +186,7 @@ The program will read Green's function data from `/data/GF_cache/YOUR_NAME.hdf5`
 ```bash
 mqed_lindblad greens.h5_path=YOUR_PATH
 ```
-Here the path directly comes from the absolute path after simulation `/.../MacroscopicQED/outputs/Dyadic_GF_analytical/Y-M-D/H-M-S/YOUR_NAME.hdf5` as mentioned in Dyadic Green's function simulation. Or you can manually overwrite the yaml file in `configs/Lindblad/quantum_dynamics.yaml` file.
+Here the path directly comes from the absolute path after simulation `/YOUR_PATH/YOUR_NAME.hdf5` as mentioned in Dyadic Green's function simulation. Or you can manually overwrite the yaml file in `configs/Lindblad/quantum_dynamics.yaml` file.
 
 **NHSE dynamics:**
 The equivalent **Non-Hermitian Schodinger equation(NHSE)** is implemented here which gives identical result with Lindblad dynamic as we tested. **We recommend NHSE for large simulation** since it is **much faster** than simulate density matrix in general.
@@ -365,7 +365,7 @@ MacroscopicQED/
 ## Beta Test:
 * **Prerequisite:** Install the package as introduced in **Installation**.
 * **Step1:** After install the package, run `mqed_GF_Sommerfeld simulation.energy_eV=1.864` in the ternimal, it will generate `result_Ag_2nm.hdf5` file under subdirectory `outputs/Dyadic_GF_Sommerfeld/Y-M-D/H-M-S/`. Create a new subdirectory named `data/GF_cache` under the root directory (See project layout), copy-paste the hdf5 file into `data/GF_cache/` and **rename it** as `Frensel_Ag_2_nm_665nm.hdf5`, which means simulation of donor on the height 2nm of silver planar surface and emitting 665nm photon.
-* **Step2:** Run `mqed_FE` in the terminal, it will generate `enhancement_magic_angle_1.864eV.png` file under subdirectory `outputs/RET/Y-M-D/H-M-S/`. This result is the enhancement electric field of dipole emitting energy with value **1.864eV** with the azimuthal angle of both donor and acceptor is magic-angle(**arcos(1/sqrt(3))**). The X-axis is the horizental distance between donor and acceptor. You should get same result as `enhancement_magic_angle_1.864eV.png` under subdirectory `Beta_Test/`.
+* **Step2:** Run `mqed_FE` in the terminal, it will generate `enhancement_magic_angle_1.864eV.png` file under subdirectory `outputs/FE/Y-M-D/H-M-S/`. This result is the enhancement electric field of dipole emitting energy with value **1.864eV** with the azimuthal angle of both donor and acceptor is magic-angle(**arcos(1/sqrt(3))**). The X-axis is the horizental distance between donor and acceptor. You should get same result as `enhancement_magic_angle_1.864eV.png` under subdirectory `Beta_Test/`.
 Here is the reference plot for this step:
   <p align="center">
     <img src="Beta_Test/enhancement_magic_angle_1.864eV.png" alt="Reference result for Step 3" width="500">
