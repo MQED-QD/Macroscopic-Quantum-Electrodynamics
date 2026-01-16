@@ -4,35 +4,40 @@ defaults:
 
 hydra:
   job:
-    name: plot_ipr
+    name: plot_pr
 
 curves:
-  # Example stationary vs disorder-avg
-  # - label: "Fresnel (stationary)"
-  #   use_latest_glob: "${oc.env:MQED_ROOT,${hydra:runtime.cwd}}/data/QDyn_cache/Frensel_silver_stationary_665nm.hdf5"
-  #   style: "-"
-  #   lw: 1.6
-  # - label: "BEM (stationary)"
-  #   use_latest_glob: "${oc.env:MQED_ROOT,${hydra:runtime.cwd}}/data/QDyn_cache/BEM_silver_stationary_665nm.hdf5"
-  #   style: "--"
-  #   lw: 1.6
-
-  - label: "nanorod BEM"
-    use_latest_glob: "${oc.env:MQED_ROOT,${hydra:runtime.cwd}}/data/QDyn_cache/BEM_silver_nanorod_stationary_665nm.hdf5"  # or using "outputs/Lindblad/.../qdyn_result.hdft"
+  # Example 
+  - label: "Frensel"
+    use_latest_glob: "${oc.env:MQED_ROOT,${hydra:runtime.cwd}}/data/QDyn_cache/Frensel_silver_stationary_665nm_N100.hdf5"  # or using "outputs/Lindblad/.../qdyn_result.hdft"
     style: "-"         # matplotlib line format
     lw: 1.5
+  - label: "BEM"
+    use_latest_glob: "${oc.env:MQED_ROOT,${hydra:runtime.cwd}}/data/QDyn_cache/BEM_silver_stationary_665nm_N100.hdf5"  # or using "outputs/Lindblad/.../qdyn_result.hdft"
+    style: "--"         # matplotlib line format
+    lw: 1.5
+
+  # - label: "nanorod BEM"
+  #   use_latest_glob: "${oc.env:MQED_ROOT,${hydra:runtime.cwd}}/data/QDyn_cache/BEM_silver_nanorod_665nm_N50.hdf5"  # or using "outputs/Lindblad/.../qdyn_result.hdft"
+  #   style: "-"         # matplotlib line format
+  #   lw: 1.5
+
+  # - label: "planar Frensel"
+  #   use_latest_glob: "${oc.env:MQED_ROOT,${hydra:runtime.cwd}}/data/QDyn_cache/Frensel_silver_planar_665nm_N50.hdf5"  # or using "outputs/Lindblad/.../qdyn_result.hdft"
+  #   style: "--"         # matplotlib line format
+  #   lw: 1.5
 
 plot_settings:
   save_plot: true
   geometry: nanorod # or other geometries, 'sphere', 'nanorod', etc.
   material: silver
-  excitation_position_nm: middle # or 'top', 'bottom', 'middle', etc.
+  excitation_position_nm: middle # or 'initial', 'middle', etc.
   filename: "${plot_settings.geometry}_${plot_settings.material}_${plot_settings.excitation_position_nm}_pr_comparison.png"
   dpi: 400
   show: false
   tight_layout: true
   grid: false # Enable grid for true, or False to disable
-  legend: false # set to true to show legend
+  legend: true # set to true to show legend
   figsize: [7.5, 5.0]
 
   # Choose by indices OR by time (ps)
@@ -46,6 +51,15 @@ plot_settings:
   yscale: linear
   xlim: null
   ylim: null
+
+  font:
+    family: null        # e.g. "DejaVu Sans", "Times New Roman"; null keeps default
+    labelsize: 12
+    ticksize: 12
+    legendsize: 12
+    titlesize: 12
+    labelweight: bold   # "normal" or "bold"
+    legendweight: bold  # "normal" or "bold"
 
   # If your file stores ipr_std (disorder avg), shade ±1σ
   shade_std: true

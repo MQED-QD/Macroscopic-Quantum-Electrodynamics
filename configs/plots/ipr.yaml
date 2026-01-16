@@ -46,6 +46,16 @@ plot_settings:
   xlim: null
   ylim: null
 
+  font:
+    family: null        # e.g. "DejaVu Sans", "Times New Roman"; null keeps default
+    labelsize: 12
+    ticksize: 12
+    legendsize: 12
+    titlesize: 12
+    labelweight: bold   # "normal" or "bold"
+    legendweight: bold  # "normal" or "bold"
+
+
   # If your file stores ipr_std (disorder avg), shade ±1σ
   shade_std: true
 
