@@ -109,6 +109,14 @@ def main(cfg: DictConfig) -> None:
         figsize=(ps.figsize[0], ps.figsize[1]) if getattr(ps, "figsize", None) else (7, 5)
     )
 
+    # set global font sizes
+    font = getattr(ps, "font", None)
+
+    # optional: set global family (affects everything)
+    if font and getattr(font, "family", None):
+        plt.rcParams["font.family"] = str(font.family)
+
+
     for curve in cfg.curves:
         path = _resolve_input_path(curve)
         logger.info(f"Using file: {path}")
@@ -131,15 +139,39 @@ def main(cfg: DictConfig) -> None:
 
         logger.info(f"Plotted {label} (source={meta.get('source','?')})")
 
-    ax.set_xlabel(ps.xlabel)
-    ax.set_ylabel(ps.ylabel)
-    if getattr(ps, "title", None): ax.set_title(ps.title)
-    if getattr(ps, "xscale", None): ax.set_xscale(ps.xscale)
-    if getattr(ps, "yscale", None): ax.set_yscale(ps.yscale)
+    if font:
+        labelsize  = int(getattr(font, "labelsize", 12))
+        titlesize  = int(getattr(font, "titlesize", 12))
+        ticksize   = int(getattr(font, "ticksize", 12))
+        legendsize = int(getattr(font, "legendsize", 12))
+        labelweight = str(getattr(font, "labelweight", "normal"))
+        legendweight = str(getattr(font, "legendweight", "normal"))
+    else:
+        labelsize = titlesize = 12
+        ticksize = 12
+        legendsize = 12
+        labelweight = "normal"
+        legendweight = "normal"
+
+    ax.set_xlabel(ps.xlabel, fontsize=labelsize, fontweight=labelweight)
+    ax.set_ylabel(ps.ylabel, fontsize=labelsize, fontweight=labelweight)
+
+    if getattr(ps, "title", None):
+        ax.set_title(ps.title, fontsize=titlesize, fontweight=labelweight)
+
+    # ticks
+    ax.tick_params(axis="both", which="both", labelsize=ticksize)
+
+    # legend
+    if getattr(ps, "legend", True):
+        leg = ax.legend(fontsize=legendsize)
+        # make legend text bold if requested
+        for txt in leg.get_texts():
+            txt.set_fontweight(legendweight)
+
     if getattr(ps, "xlim", None): ax.set_xlim(ps.xlim[0], ps.xlim[1])
     if getattr(ps, "ylim", None): ax.set_ylim(ps.ylim[0], ps.ylim[1])
     if getattr(ps, "grid", True):  ax.grid(True, which="both", ls="--", alpha=0.5)
-    if getattr(ps, "legend", True): ax.legend()
     if getattr(ps, "tight_layout", True): plt.tight_layout()
 
     if getattr(ps, "save_plot", True):
