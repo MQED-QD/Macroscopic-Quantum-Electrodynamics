@@ -37,6 +37,7 @@ setup(
             "mqed_BEM_reconstruct_GF = mqed.BEM.reconstruct_GF:main",
             "mqed_plot_IPR = mqed.plotting.plot_ipr:main",
             "mqed_plot_PR = mqed.plotting.plot_pr:main",
+            "mqed_FE_compare_planar_vs_nanorod = mqed.BEM.compare_planar_vs_nanorod:main",
         ]
     },
 
