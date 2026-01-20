@@ -109,7 +109,6 @@ def main(cfg: DictConfig) -> None:
         logger.info(f"Plotted {label} from {path.name} (source={meta.get('source','?')})")
 
     # labels and title
-    # labels and title
     if font:
         labelsize  = int(getattr(font, "labelsize", 12))
         titlesize  = int(getattr(font, "titlesize", 12))
