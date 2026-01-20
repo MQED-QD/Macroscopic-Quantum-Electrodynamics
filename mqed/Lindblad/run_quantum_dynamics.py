@@ -59,14 +59,17 @@ def app_run(cfg:DictConfig, output_dir: Optional[Path]=None):
     # 3) Choose dynamics backend
     method = cfg.solver.method
     if method == 'Lindblad':
+        logger.info("Using Lindblad master equation solver.")
         dyn = LindbladDynamics(sim_cfg, G_slice)
         # Lindblad expects density matrix
         rho_or_psi = fock_dm(sim_cfg.Nmol + 1, cfg.initial_state.site_index)
     elif method == 'NonHermitian':
+        logger.info("Using Non-Hermitian Schrodinger Equation solver.")
         dyn = NonHermitianSchDynamics(sim_cfg, G_slice)
         # Non-Hermitian Sch. expects ket
         rho_or_psi = fock(sim_cfg.Nmol + 1, cfg.initial_state.site_index)
     else:
+        logger.error(f"Unknown solver.method = {method}")
         raise ValueError(f"Unknown solver.method = {method}")
 
 
@@ -88,6 +91,7 @@ def app_run(cfg:DictConfig, output_dir: Optional[Path]=None):
     # 6) Save to HDF5
     outfile = output_dir / cfg.output.filename
     # states = getattr(result, 'states', None)
+    logger.info(f"Saving results to {outfile.absolute()}")
     save_dx_h5(
     outfile=outfile,
     t_ps=result.tlist,
