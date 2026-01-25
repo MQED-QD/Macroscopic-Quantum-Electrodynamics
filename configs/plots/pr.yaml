@@ -17,13 +17,13 @@ curves:
   #   style: "--"         # matplotlib line format
   #   lw: 1.5
 
-  - label: "nanorod BEM"
-    use_latest_glob: "${oc.env:MQED_ROOT,${hydra:runtime.cwd}}/data/QDyn_cache/height_8nm/BEM_silver_nanorod_665nm_N50.hdf5"  # or using "outputs/Lindblad/.../qdyn_result.hdft"
+  - label: "planar Frensel"
+    use_latest_glob: "${oc.env:MQED_ROOT,${hydra:runtime.cwd}}/data/QDyn_cache/height_8nm/Frensel_silver_planar_665nm_N50.hdf5"  # or using "outputs/Lindblad/.../qdyn_result.hdft"
     style: "-"         # matplotlib line format
     lw: 1.5
 
-  - label: "planar Frensel"
-    use_latest_glob: "${oc.env:MQED_ROOT,${hydra:runtime.cwd}}/data/QDyn_cache/height_8nm/Frensel_silver_planar_665nm_N50.hdf5"  # or using "outputs/Lindblad/.../qdyn_result.hdft"
+  - label: "nanorod BEM"
+    use_latest_glob: "${oc.env:MQED_ROOT,${hydra:runtime.cwd}}/data/QDyn_cache/height_8nm/BEM_silver_nanorod_665nm_N50.hdf5"  # or using "outputs/Lindblad/.../qdyn_result.hdft"
     style: "--"         # matplotlib line format
     lw: 1.5
 
@@ -31,14 +31,14 @@ plot_settings:
   save_plot: true
   geometry: nanorod # or other geometries, 'sphere', 'nanorod', etc.
   material: silver
-  excitation_position_nm: middle # or 'initial', 'middle', etc.
+  excitation_position_nm: initial # or 'initial', 'middle', etc.
   filename: "${plot_settings.geometry}_${plot_settings.material}_${plot_settings.excitation_position_nm}_pr_comparison.png"
   dpi: 400
   show: false
   tight_layout: true
   grid: false # Enable grid for true, or False to disable
   legend: true # set to true to show legend
-  figsize: [7.5, 5.0]
+  figsize: [8.0, 6.0]
 
   # Choose by indices OR by time (ps)
   x_range_ps: [0.0, 150.0]
