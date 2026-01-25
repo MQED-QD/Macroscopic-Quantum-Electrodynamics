@@ -90,16 +90,21 @@ mpirun --version
 
 This package installs the following command‑line tools (from `setup.py` entry points):
 
-| Command              | What it does                                       |
-| -------------------- | ---------------------------------------------------|
-| `mqed_GF_Sommerfeld` | Run Dyadic Green’s function simulation on planar.  |
-| `mqed_RET`           | Run RET analysis                                   |
-| `mqed_FE`            | Run Field Enhancement analysis                     |
-| `mqed_lindblad`      | Time evolution with Lindblad dynamics              |
-| `mqed_nhse`          | Time evolution with NHSE model                     |
+| Command                   | What it does                                          |
+| --------------------      | ---------------------------------------------------   |
+| `mqed_GF_Sommerfeld`      | Run Dyadic Green’s function simulation on planar.     |
+| `mqed_RET`                | Run RET analysis                                      |
+| `mqed_FE`                 | Run Field Enhancement analysis                        |   
+| `mqed_lindblad`           | Time evolution with Lindblad dynamics                 |
+| `mqed_nhse`               | Time evolution with NHSE model                        |
 <!-- | `mqed_nhse_disorder` | Disorder sweep;                                    | -->
-| `mqed_plot_msd`      | Plot mean‑squared displacement from results        |
-| `mqed_plot_sqrt_msd` | Plot square‑root MSD from results                  |
+| `mqed_plot_msd`           | Plot mean‑squared displacement from results           |
+| `mqed_plot_sqrt_msd`      | Plot square‑root MSD from results                     |
+| `mqed_BEM_compute_peff`   | Compute the effective dipole momentum intensity       |
+| `mqed_BEM_reconstruct_GF` | Reconsctruct dyadic GF from BEM simulation            |
+| `mqed_plot_IPR`           | Plot Inverse Paricipation Ratio(IPR)                  |
+| `mqed_plot_PR`            | Plot Participation Ratio(PR)                          |
+| `mqed_BEM_compare_silver` | Compare the BEM and Frensel result for silver planar  |
 
 > All commands are configured via Hydra using YAML files under `configs/`. You can edit those files or override any key from the CLI.
 
@@ -339,12 +344,12 @@ MacroscopicQED/
 ├─ configs/                 # Hydra configs (Dyadic_GF, Lindblad, analysis, plotting)
 ├─ data/                    # caches (e.g., GF_cache, QDyn_cache)
 ├─ mqed/                    # package source
-│  ├─ Dyadic_GF/
-│  ├─ Lindblad/
-│  ├─ analysis/
-│  ├─ plotting/
+│  ├─ Dyadic_GF/            # Implementation of Frensel/Sommerfeld integral for planar system.
+│  ├─ Lindblad/             # Implementation of standard Lindblad equation and non-Schodinger equation.
+│  ├─ analysis/             # Calculate and plot FE, REF.
+│  ├─ plotting/             # Plot MSD, IPR, RMSD, PR 
 │  ├─ BEM/                  # Run Boundary Element Method(BEM) for electric field simulation.
-│  └─ utils/
+│  └─ utils/                # Tools for different programs, such as building dipole unit direction, process hdf5 file.
 ├─ outputs/                 # run outputs (created at runtime)
 ├─ environmental.yaml       # environment specification
 ├─ pyproject.toml           # build metadata
@@ -359,6 +364,7 @@ MacroscopicQED/
 * **MPI errors**: verify `mpirun` exists on PATH and `mpi4py` is installed in the active env.
 * **Missing config**: ensure the specified YAML exists under `configs/` or list available options in that folder.
 * **Plot scripts**: check that `curves` points to a completed run directory containing the expected logs/data.
+* **FileNotFoundError**: check the file paths for specific program.
 
 ---
 
