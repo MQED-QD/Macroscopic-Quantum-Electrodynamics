@@ -106,7 +106,7 @@ def main(cfg: DictConfig) -> None:
 
     ps = cfg.plot_settings
     fig, ax = plt.subplots(
-        figsize=(ps.figsize[0], ps.figsize[1]) if getattr(ps, "figsize", None) else (7, 5)
+        figsize=(ps.figsize[0], ps.figsize[1]) if getattr(ps, "figsize", None) else (8, 6)
     )
 
     # set global font sizes
