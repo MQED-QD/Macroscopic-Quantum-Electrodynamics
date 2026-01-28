@@ -14,9 +14,10 @@ parameters:
   zA_nm: 8
   geometry: 'nanorod' # or 'nanorod', 'sphere', match with your simulation to avoid confusion.
   material: 'Ag'
+  dipole_position_nm: 600    # dipole position along the nanorod axis in nm
 
 io:
-  xlsx_path: ${oc.env:MQED_ROOT,${hydra:runtime.cwd}}/data/BEM_cache/dipole_silver_nanorod_8nm_GF_665nm_pos_500_height_8_0.xlsx
+  xlsx_path: ${oc.env:MQED_ROOT,${hydra:runtime.cwd}}/data/BEM_cache/dipole_silver_nanorod_8nm_GF_665nm_pos_${parameters.dipole_position_nm}_height_8_0.xlsx
   peff_path: ${oc.env:MQED_ROOT,${hydra:runtime.cwd}}/data/BEM_cache/peff_vs_lambda_665nm.csv
 
-  output_file: BEM_GF_${parameters.geometry}_${parameters.material}_${parameters.lambda_nm}nm_height_${parameters.zD_nm}nm.hdf5
+  output_file: BEM_GF_${parameters.geometry}_${parameters.material}_${parameters.lambda_nm}nm_height_${parameters.zD_nm}nm_pos_${parameters.dipole_position_nm}nm.hdf5
