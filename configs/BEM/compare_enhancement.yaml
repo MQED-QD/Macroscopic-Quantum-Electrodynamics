@@ -1,0 +1,86 @@
+defaults:
+  - hydra: default
+  - _self_
+
+hydra:
+  job:
+    name: plot_compare_enhancement
+
+# Shared GF settings (used by all curves unless curve.gf overrides)
+gf_settings:
+  x_key: Rx_nm
+  energy_index: 0
+  dipoles:
+    donor: {theta_deg: 0.0, phi_deg: 0.0}
+    acceptor: {theta_deg: 0.0, phi_deg: 0.0}
+
+curves:
+  # - label: "Plane"
+  #   use_latest_glob: "${oc.env:MQED_ROOT,${hydra:runtime.cwd}}/data/GF_cache/Frensel_GF_planar_Ag_height_8nm.hdf5"
+  #   components: [imag]
+  #   style_real: "-"
+  #   style_imag: "-"
+  #   lw: 2.0
+
+  - label: "Middle"
+    use_latest_glob: "${oc.env:MQED_ROOT,${hydra:runtime.cwd}}/data/BEM_cache/BEM_GF_nanorod_Ag_665nm_height_8nm_pos_500nm.hdf5"
+    components: [real,imag]
+    style_real: "o-"
+    style_imag: "s-"
+    lw: 2.0
+
+  - label: "Middle+3nm"
+    use_latest_glob: "${oc.env:MQED_ROOT,${hydra:runtime.cwd}}/data/BEM_cache/BEM_GF_nanorod_Ag_665nm_height_8nm_pos_503nm.hdf5"
+    components: [real,imag]
+    style_real: "-"
+    style_imag: "-"
+    lw: 2.0
+
+  # - label: "Middle+100nm"
+  #   use_latest_glob: "${oc.env:MQED_ROOT,${hydra:runtime.cwd}}/data/BEM_cache/BEM_GF_nanorod_Ag_665nm_height_8nm_pos_600nm.hdf5"
+  #   components: [imag]
+  #   style_real: "--"
+  #   style_imag: "--"
+  #   lw: 2.0
+
+  # Example: triangular (just add another curve)
+  # - label: "Triangular"
+  #   use_latest_glob: "${oc.env:MQED_ROOT,${hydra:runtime.cwd}}/path/to/triangle.hdf5"
+  #   components: [real, imag]
+  #   style_real: "-"
+  #   style_imag: "--"
+  #   lw: 2.0
+
+plot_settings:
+  save_plot: true
+  filename: nanorod_enhancement_compare_V_Gamma.png
+  dpi: 300
+  show: false
+  tight_layout: true
+  grid: false
+  legend: true
+  figsize: [8, 6]
+
+  xlabel: "Distance $R_x$ (nm)"
+  ylabel: "Enhancement (Normalized)"
+  title: null
+
+  xscale: linear
+  yscale: linear
+  xlim: [1, 50]
+  ylim: null
+
+  # label suffixes appended automatically
+  real_label_suffix: " $V/V^{0}$"
+  imag_label_suffix: " $\\Gamma/\\Gamma^{0}$"
+
+  font:
+    family: null
+    labelsize: 14
+    ticksize: 14
+    legendsize: 14
+    titlesize: 14
+    labelweight: bold
+    legendweight: bold
+
+  lw: 2.5
