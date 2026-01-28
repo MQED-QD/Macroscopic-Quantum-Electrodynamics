@@ -69,7 +69,7 @@ class Greens_function_analytical:
     def complex_quad(self,
                     func: callable,
                     a: float,
-                    qmax=1e13,
+                    qmax=np.inf,
                     epsabs=1e-10,
                     epsrel=1e-10,
                     limit=400,):
@@ -78,7 +78,7 @@ class Greens_function_analytical:
         Args:
             func (callable): The complex-valued function to integrate.
             a (float): The lower limit of integration.
-            qmax (float): Maximum q value for integration. Defaults to 1e13.
+            qmax (float): Maximum q value for integration. Defaults to np.inf.
             epsabs (float, optional): Absolute error tolerance. Defaults to 1e-10.
             epsrel (float, optional): Relative error tolerance. Defaults to 1e-10
             limit (int, optional): Maximum number of subintervals. Defaults to 400.
