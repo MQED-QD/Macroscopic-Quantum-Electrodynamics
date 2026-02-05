@@ -10,8 +10,18 @@ from loguru import logger
 from mqed.utils.au_unit import au_to_eV, ps_to_au
 from mqed.Lindblad.ddi_matrix import _phi_wrapped_normal_deg, build_ddi_matrix_from_Gslice
 from mqed.utils.orientation import resolve_angle_deg, spherical_to_cartesian_dipole
+from mqed.Lindblad.coupling_filter import enforce_coupling_range
 
 ArrayLike = Union[np.ndarray, Sequence[float]]
+
+@dataclass(frozen=True)
+class CouplingLimitConfig:
+    enable: bool = False
+    V_hop_radius: Optional[int] = None     # e.g. 1 → NN only
+    keep_V_on_site: bool = False
+    Gamma_rule: str = "leave"              # "leave" | "same_as_V" | "diagonal_only" | "limit_by_hops"
+    Gamma_hop_radius: Optional[int] = None
+    keep_Gamma_on_site: bool = True
 
 @dataclass(frozen=True)
 class SimulationConfig:
@@ -27,6 +37,7 @@ class SimulationConfig:
     phi_deg: Union[str,float]           # azimuthal angle of dipole, string used for magic angle
     disorder_sigma_phi_deg: Union[None,float] # standard deviation of azimuthal angle
     mode: str                   # The string for angle-ordered system or disorder system.
+    coupling_limit: CouplingLimitConfig = field(default_factory=CouplingLimitConfig)
 
 @dataclass
 class SimulationResult:
@@ -56,6 +67,7 @@ class QuantumDynamics(ABC):
         H_np = np.zeros((self.dim,self.dim), dtype=complex)
         
         if self.cfg.mode == 'stationary':
+            logger.info("Building Hamiltonian for angle-ordered system.")
             self.phi_deg   = resolve_angle_deg(self.cfg.phi_deg)
             # Convert angles to Cartesian vectors
             p_donor = spherical_to_cartesian_dipole(self.cfg.theta_deg,
@@ -81,6 +93,7 @@ class QuantumDynamics(ABC):
                 disorder_seed= None
             )
         else:  # disorder mode
+            logger.info("Building Hamiltonian for orientation-disordered system.")
             self.V_ab, self.Gamma_ab = build_ddi_matrix_from_Gslice(
                 G_slice = Green,
                 Rx_nm = self.cfg.Rx_nm,
@@ -95,10 +108,27 @@ class QuantumDynamics(ABC):
                 disorder_sigma_phi_deg= self.cfg.disorder_sigma_phi_deg,
                 disorder_seed= seed
             )
+        cl = getattr(self.cfg, "coupling_limit", None)
+        if cl is not None and cl.enable:
+            self.V_ab, self.Gamma_ab = enforce_coupling_range(
+                self.V_ab, self.Gamma_ab,
+                V_hop_radius    = cl.V_hop_radius,
+                keep_V_on_site  = cl.keep_V_on_site,
+                Gamma_rule      = cl.Gamma_rule,
+                Gamma_hop_radius= cl.Gamma_hop_radius,
+                keep_Gamma_on_site = cl.keep_Gamma_on_site,
+            )
+            if cl.V_hop_radius ==1:
+                logger.info("Applied coupling limit: V to nearest-neighbours only.")
+            elif cl.V_hop_radius ==2:
+                logger.info("Applied coupling limit: V to next-nearest-neighbours only.")
+            else:
+                logger.info("Applied coupling limit to V with hop radius %s.", str(cl.V_hop_radius))
 
         H_np[1:, 1:] = self.V_ab / au_to_eV
         np.fill_diagonal(H_np[1:, 1:], self.omega_M)
         self.Gamma_ab = self.Gamma_ab / au_to_eV   # convert to a.u.
+        # breakpoint()
         self.Hamiltonian = Qobj(H_np, dims=[[self.dim], [self.dim]])
         return self.Hamiltonian
     
