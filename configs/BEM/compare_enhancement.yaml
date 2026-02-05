@@ -15,26 +15,26 @@ gf_settings:
     acceptor: {theta_deg: 0.0, phi_deg: 0.0}
 
 curves:
-  # - label: "Plane"
-  #   use_latest_glob: "${oc.env:MQED_ROOT,${hydra:runtime.cwd}}/data/GF_cache/Frensel_GF_planar_Ag_height_8nm.hdf5"
-  #   components: [imag]
-  #   style_real: "-"
-  #   style_imag: "-"
-  #   lw: 2.0
+  - label: "Plane"
+    use_latest_glob: "${oc.env:MQED_ROOT,${hydra:runtime.cwd}}/data/GF_cache/Frensel_GF_planar_Ag_height_8nm.hdf5"
+    components: [real]
+    style_real: "-"
+    style_imag: "-"
+    lw: 2.0
 
-  - label: "Middle"
+  - label: "Nanorod"
     use_latest_glob: "${oc.env:MQED_ROOT,${hydra:runtime.cwd}}/data/BEM_cache/BEM_GF_nanorod_Ag_665nm_height_8nm_pos_500nm.hdf5"
-    components: [real,imag]
+    components: [real]
     style_real: "o-"
     style_imag: "s-"
     lw: 2.0
 
-  - label: "Middle+3nm"
-    use_latest_glob: "${oc.env:MQED_ROOT,${hydra:runtime.cwd}}/data/BEM_cache/BEM_GF_nanorod_Ag_665nm_height_8nm_pos_503nm.hdf5"
-    components: [real,imag]
-    style_real: "-"
-    style_imag: "-"
-    lw: 2.0
+  # - label: "Nanorod_const"
+  #   use_latest_glob: "${oc.env:MQED_ROOT,${hydra:runtime.cwd}}/data/BEM_cache/BEM_GF_nanorod_const_665nm_height_8nm_pos_500nm.hdf5"
+  #   components: [real]
+  #   style_real: "-"
+  #   style_imag: "-"
+  #   lw: 2.0
 
   # - label: "Middle+100nm"
   #   use_latest_glob: "${oc.env:MQED_ROOT,${hydra:runtime.cwd}}/data/BEM_cache/BEM_GF_nanorod_Ag_665nm_height_8nm_pos_600nm.hdf5"
@@ -62,12 +62,12 @@ plot_settings:
   figsize: [8, 6]
 
   xlabel: "Distance $R_x$ (nm)"
-  ylabel: "Enhancement (Normalized)"
+  ylabel: "Ratio"
   title: null
 
   xscale: linear
   yscale: linear
-  xlim: [1, 50]
+  xlim: [1, 40]
   ylim: null
 
   # label suffixes appended automatically
