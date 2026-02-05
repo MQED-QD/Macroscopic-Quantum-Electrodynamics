@@ -7,6 +7,7 @@ import hydra
 from omegaconf import DictConfig
 from hydra.core.hydra_config import HydraConfig
 from loguru import logger
+import pandas as pd
 
 from mqed.utils.file_utils import _resolve_input_path
 from mqed.utils.logging_utils import setup_loggers_hydra_aware
@@ -190,6 +191,10 @@ def main(cfg: DictConfig) -> None:
         figpath = outdir / name
         fig.savefig(figpath, dpi=getattr(ps, "dpi", 300), bbox_inches="tight")
         logger.success(f"Saved plot → {figpath}")
+        df = pd.DataFrame({"x_nm": x_nm, "enh_real": enh_real, "enh_imag": enh_imag})
+        data_path = figpath.with_suffix(".csv")
+        df.to_csv(data_path, index=False)
+        logger.success(f"Saved data → {data_path}")
 
     if getattr(ps, "show", False):
         plt.show()
