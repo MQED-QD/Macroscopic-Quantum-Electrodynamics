@@ -7,7 +7,7 @@ hydra:
     name: FE
 log_file: ${hydra:runtime.output_dir}/${hydra.job.name}.log
 
-input_file: ${oc.env:MQED_ROOT,${hydra:runtime.cwd}}/data/GF_cache/Frensel_Ag_2_nm_665nm.hdf5 # 
+input_file: ${oc.env:MQED_ROOT,${hydra:runtime.cwd}}/data/GF_cache/Frensel_GF_planar_Ag_height_8nm_665nm.hdf5 # 
 
 orientations:
   donor:    { theta_deg: 90.0, phi_deg: "magic" }
@@ -18,7 +18,7 @@ plot_settings:
   dpi: 400
 
   # choose x-range by value or by indices, not both  
-  x_range_nm: [0.0,500.0] #-> masks points where 1 ≤ Rx_nm ≤ 10
+  x_range_nm: [0.0,100.0] #-> masks points where 1 ≤ Rx_nm ≤ 100
   # x_index_range: [0, 9] #-> masks first 10 points (index 0 to 9)
 
   components: ["real", "imag"]    # options: ["real"], ["imag"], ["real","imag"]
