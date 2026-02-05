@@ -52,7 +52,7 @@ def build_and_save(
     # breakpoint()
     if rx_nm_pos[0] != 0.0:
         logger.info("The first position is not zero, shift positions accordingly.")
-        rx_nm_pos = rx_nm_pos - rx_nm_pos[0]
+        rx_nm_pos = rx_nm_pos - rx_nm_pos[0] +1
     logger.info(f"Final positions (nm): {rx_nm_pos}")
     # --- prepend Rx=0 ---
     Rxnm = np.concatenate(([0.0], rx_nm_pos))
