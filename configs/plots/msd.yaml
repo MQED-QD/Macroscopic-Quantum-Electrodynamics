@@ -32,26 +32,26 @@ curves:
   # - label: "Frensel"
   #   use_latest_glob: "${oc.env:MQED_ROOT,${hydra:runtime.cwd}}/data/QDyn_cache/Frensel_silver_stationary_665nm_N100.hdf5"  # or using "outputs/Lindblad/.../qdyn_result.hdft"
   #   style: "-"         # matplotlib line format
-  #   lw: 1.5
+  #   lw: 2
   # - label: "BEM"
   #   use_latest_glob: "${oc.env:MQED_ROOT,${hydra:runtime.cwd}}/data/QDyn_cache/BEM_silver_stationary_665nm_N100.hdf5"  # or using "outputs/Lindblad/.../qdyn_result.hdft"
   #   style: "--"         # matplotlib line format
-  #   lw: 1.5
+  #   lw: 2
 
   - label: "planar"
     use_latest_glob: "${oc.env:MQED_ROOT,${hydra:runtime.cwd}}/data/QDyn_cache/intermol_8nm/Frensel_silver_planar_665nm_N30.hdf5"  # or using "outputs/Lindblad/.../qdyn_result.hdft"
     style: "-"         # matplotlib line format
-    lw: 1.5
+    lw: 2
 
   # - label: "nanorod"
   #   use_latest_glob: "${oc.env:MQED_ROOT,${hydra:runtime.cwd}}/data/QDyn_cache/intermol_8nm/BEM_silver_nanorod_665nm_N30.hdf5"  # or using "outputs/Lindblad/.../qdyn_result.hdft"
   #   style: "--"         # matplotlib line format
-  #   lw: 1.5
+  #   lw: 2
   
   # - label: "nanorod_NN"
   #   use_latest_glob: "${oc.env:MQED_ROOT,${hydra:runtime.cwd}}/data/QDyn_cache/intermol_8nm/BEM_silver_nanorod_665nm_N30_NN.hdf5"  # or using "outputs/Lindblad/.../qdyn_result.hdft"
   #   style: "-."         # matplotlib line format
-  #   lw: 1.5
+  #   lw: 2
 
   # - label: "free space"
   #   use_latest_glob: "${oc.env:MQED_ROOT,${hydra:runtime.cwd}}/data/QDyn_cache/height_8nm/Frensel_vacuum_planar_665nm_N50.hdf5"  # or using "outputs/Lindblad/.../qdyn_result.hdft"
@@ -87,12 +87,13 @@ plot_settings:
 
   font:
     family: null        # e.g. "DejaVu Sans", "Times New Roman"; null keeps default
-    labelsize: 12
-    ticksize: 12
-    legendsize: 12
-    titlesize: 12
+    labelsize: 18
+    ticksize: 18
+    legendsize: 18
+    titlesize: 18
     labelweight: bold   # "normal" or "bold"
     legendweight: bold  # "normal" or "bold"
+    tickweight: bold     # "normal" or "bold"
 
   # optional multiply time axis (e.g., to show ×10^-10 s visually):
   x_scale_factor: 1.0        # keep 1.0 if you already saved 't_ps' in seconds; use 1e-12 to convert ps→s
