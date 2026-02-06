@@ -27,17 +27,22 @@ def build_observable(item: Dict[str, Any], *, dim: int, d_nm: float, Nmol: int, 
     params = dict(item.get("params", {}) or {})
 
     if name == "X_shift":
+        logger.info(f"Adding observable: position operator (X_shift)")
         return name, position_operator(dim, d_nm, Nmol, init_site)
     if name == "X_shift2":
+        logger.info(f"Adding observable: mean squared displacement operator (X_shift2)")
         return name, msd_operator(dim, d_nm, Nmol, init_site)
     if name == "pop_site":
+        logger.info(f"Adding observable: population operator at specified site")
         site = int(params.get("site", 1))
         return f"pop_site_{site}", site_population_operator(dim, site)  # label includes site
     if name == "IPR_site":
         # bind Nmol (required); any extra params are ignored safely
+        logger.info(f"Adding observable: Inverse Participation Ratio (requires Nmol param)")
         Nmol_local = int(params.get("Nmol", Nmol))
         return name, (lambda t, st: ipr_callable(t, st, Nmol=Nmol_local))
 
+    logger.error(f"Unknown observable name: {name!r}")
     raise ValueError(f"Unknown observable name: {name!r}")
 
 def app_run(cfg:DictConfig, output_dir: Optional[Path]=None):
