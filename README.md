@@ -97,7 +97,6 @@ This package installs the following command‑line tools (from `setup.py` entry 
 | `mqed_FE`                 | Run Field Enhancement analysis                        |   
 | `mqed_lindblad`           | Time evolution with Lindblad dynamics                 |
 | `mqed_nhse`               | Time evolution with NHSE model                        |
-<!-- | `mqed_nhse_disorder` | Disorder sweep;                                    | -->
 | `mqed_plot_msd`           | Plot mean‑squared displacement from results           |
 | `mqed_plot_sqrt_msd`      | Plot square‑root MSD from results                     |
 | `mqed_BEM_compute_peff`   | Compute the effective dipole momentum intensity       |
