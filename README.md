@@ -248,7 +248,7 @@ curves:
     use_latest_glob: "${oc.env:MQED_ROOT,${oc.env:PWD}}/data/QDyn_cache/YOUR_NAME.hdf5"  
     style: "-"         # matplotlib line format
     lw: 1.5
-  - label: "σ=10"
+  - label: "z-axis"
     use_latest_glob: "${oc.env:MQED_ROOT,${oc.env:PWD}}/data/QDyn_cache/YOUR_NAME.hdf5" 
     style: "-"         # e.g., "C1-"
     lw: 1.5
