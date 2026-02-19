@@ -19,6 +19,10 @@ material:
   geometry: planar # or 'sphere', 'planar', match with your simulation to avoid confusion.
 
 observables:
+  - name: root_MSD
+    kind: derived
+    enabled: true
+
   - name: X_shift
     kind: operator
 

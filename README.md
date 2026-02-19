@@ -4,7 +4,7 @@
 
 [![python](https://img.shields.io/badge/Python-3.9%2B-blue?logo=python\&logoColor=white)](#)
 [![hydra](https://img.shields.io/badge/Config-Hydra_1.x-89b8cd)](https://hydra.cc/)
-[![license](https://img.shields.io/badge/License-TBD-lightgrey)](#)
+[![license](https://img.shields.io/badge/License-Unspecified-lightgrey)](#)
 
 A Python package for Macroscopic QED simulations (Dyadic Green’s functions, RET and FE analysis, and open‑system dynamics via Lindblad / NHSE) studying exciton- and plasmon-polaritons in dielectric environments, with Hydra-based configuration and small CLI wrappers for common workflows.
 
@@ -38,7 +38,7 @@ A Python package for Macroscopic QED simulations (Dyadic Green’s functions, RE
 * Resonance energy transfer (RET) and field enhancement (FE) analysis.
 * Lindblad and non‑Hermitian skin effect (NHSE) dynamics.
 * Disorder sweeps (single process or MPI, will be implemented in the future).
-* Plotting utilities for MSD and root-MSD.
+* Plotting utilities for MSD and RMSD.
 * Reproducible runs via Hydra configs and on‑disk caching.
 
 ---
@@ -123,7 +123,7 @@ mqed_GF_Sommerfeld simulation.energy_eV=1.864
 If you want to simulate multiple frequencies, you can choose List or Dict input:
 ```bash
 mqed_GF_Sommerfeld simulation.energy_eV.min=1.0 simulation.energy_eV.max=2.0 simulation.energy_eV.points=11
-# This will simulate 11 energy sources betweeen (1.0, 1.1, 1.2, ... ,2.0 )eV
+# This will simulate 11 energy sources between (1.0, 1.1, 1.2, ... ,2.0 ) eV
 ```
 or:
 ```bash
@@ -186,7 +186,7 @@ simulation:
   phi_deg: magic # or a number
   mode: stationary # or 'disorder'
 ```
-The program will read Green's function data from `/data/GF_cache/YOUR_NAME.hdf5` for calculating dipole-dipole interaction matrix. However, you can also overrite the path for the parameter you are interested by command line:
+The program will read Green's function data from `/data/GF_cache/YOUR_NAME.hdf5` for calculating the dipole-dipole interaction matrix. You can also override the path for a specific run from the command line:
 ```bash
 mqed_lindblad greens.h5_path=YOUR_PATH
 ```
@@ -255,14 +255,16 @@ curves:
 ```
 This part gives the curve you want to plot, `use_latest_glob` gives the path of the file, `label` gives the label in the final plot, `lw` is the line-width parameter from plot, `style` is the line style. The users can change the parameter as they prefer, see: https://matplotlib.org/stable/gallery/lines_bars_and_markers/linestyles.html for line style. 
 
-If the users want to plot single/multiple lines, they can delete/add from the template. 
+If users want to plot single or multiple lines, they can adapt the template below.
 ```bash
 curves:
   - label: "YOUR LABEL"
     use_latest_glob: "YOUR PATH"  
     style: "YOUR STYLE"         # matplotlib line format
     lw: 1.5
-# This one is single plot
+```
+
+Single-curve example.
 
 ```bash
 curves:
@@ -278,8 +280,9 @@ curves:
     use_latest_glob: "YOUR PATH" 
     style: "YOUR STYLE"         # e.g., "C1-"
     lw: 1.5
-    #This one is for multiple curves plot
 ```
+
+Multiple-curve example.
 
 The plot settings can also be changed by users' preferences: (See matplotlib documentation for instruction: https://matplotlib.org/stable/users/index)
 ```bash
@@ -345,7 +348,7 @@ MacroscopicQED/
 ├─ mqed/                    # package source
 │  ├─ Dyadic_GF/            # Implementation of Fresnel/Sommerfeld integrals for planar systems.
 │  ├─ Lindblad/             # Implementation of standard Lindblad equation and non-Schrödinger equation.
-│  ├─ analysis/             # Calculate and plot FE, REF.
+│  ├─ analysis/             # Calculate and plot FE, RET.
 │  ├─ plotting/             # Plot MSD, IPR, RMSD, PR 
 │  ├─ BEM/                  # Run Boundary Element Method(BEM) for electric field simulation.
 │  └─ utils/                # Tools for different programs, such as building dipole unit direction, process hdf5 file.
@@ -369,7 +372,7 @@ MacroscopicQED/
 
 ## Beta Test:
 * **Prerequisite:** Install the package as introduced in **Installation**.
-* **Step1:** After installing the package, run `mqed_GF_Sommerfeld simulation.energy_eV=1.864` in the terminal; it will generate `Frensel_GF_planar_Ag_height_8nm.hdf5` under `outputs/Dyadic_GF_Sommerfeld/Y-M-D/H-M-S/`. Create `data/GF_cache` under the project root, copy the HDF5 there, and **rename it** to `Frensel_GF_planar_Ag_height_8nm_665nm.hdf5` (height 8 nm, Ag planar, 665 nm photon).
+* **Step1:** After installing the package, run `mqed_GF_Sommerfeld simulation.energy_eV=1.864` in the terminal; it will generate `Fresnel_GF_planar_Ag_height_8nm.hdf5` under `outputs/Dyadic_GF_Sommerfeld/Y-M-D/H-M-S/`. Create `data/GF_cache` under the project root, copy the HDF5 there, and **rename it** to `Fresnel_GF_planar_Ag_height_8nm_665nm.hdf5` (height 8 nm, Ag planar, 665 nm photon).
 The relevant configs under `configs/Dyadic_GF/GF_Sommerfeld.yaml` are:
 ```bash
 material:
@@ -395,13 +398,13 @@ simulation:
       stop: 300.0
       points: 301
 output:
-  filename: Frensel_GF_planar_${simulation.material}_height_${simulation.position.zD_nm}nm.hdf5
+  filename: Fresnel_GF_planar_${simulation.material}_height_${simulation.position.zD_nm}nm.hdf5
 ```
 We provided the result in the `Beta_Test/GF_Sommerfeld` subdirectory for reference.
 * **Step2:** Run `mqed_FE` in the terminal; it will generate `enhancement_magic_angle_1.864eV.png` under `outputs/FE/Y-M-D/H-M-S/`. This is the field enhancement for a dipole at 1.864 eV with both dipoles at the magic angle (arccos(1/√3)). The x-axis is the horizontal donor–acceptor distance. You should get the same result as `enhancement_magic_angle_height_8nm_1.864eV.png` in `Beta_Test/FE`.
 The reference configs under `configs/analysis/FE.yaml`is:
 ```bash
-input_file: ${oc.env:MQED_ROOT,${hydra:runtime.cwd}}/data/GF_cache/Frensel_GF_planar_Ag_height_8nm_665nm.hdf5 # 
+input_file: ${oc.env:MQED_ROOT,${hydra:runtime.cwd}}/data/GF_cache/Fresnel_GF_planar_Ag_height_8nm_665nm.hdf5 # 
 
 orientations:
   donor:    { theta_deg: 90.0, phi_deg: "magic" }
@@ -442,12 +445,12 @@ Here is the reference plot for this step:
     <img src="Beta_Test/FE/enhancement_magic_angle_height_8nm_1.864eV.png" alt="Reference result for Step 2" width="500">
   </p>
 
-* **Step3:** Run `mqed_nhse` in the terminal; it will generate `Frensel_silver_planar_665nm_N30.hdf5` under `outputs/NonHermitian/Y-M-D/H-M-S/`. This is the quantum dynamics of 30 z-oriented molecules at 665 nm (1.864 eV) with dipole 3.8 D; nearest-neighbor approximation is off (`coupling_limit.enable=false`). For mid-chain excitation set `initial_state.site_index` to `N/2`. Copy the HDF5 to `data/QDyn_cache/intermol_8nm` for reuse.
+* **Step3:** Run `mqed_nhse` in the terminal; it will generate `Fresnel_silver_planar_665nm_N30.hdf5` under `outputs/NonHermitian/Y-M-D/H-M-S/`. This is the quantum dynamics of 30 z-oriented molecules at 665 nm (1.864 eV) with dipole 3.8 D; nearest-neighbor approximation is off (`coupling_limit.enable=false`). For mid-chain excitation set `initial_state.site_index` to `N/2`. Copy the HDF5 to `data/QDyn_cache/intermol_8nm` for reuse.
 
 The relevant configs under `configs/Lindblad/quantum_dynamics_nhse.yaml` are: 
 ```bash
 greens:
-  h5_path: ${oc.env:MQED_ROOT,${hydra:runtime.cwd}}/data/GF_cache/Frensel_GF_planar_Ag_height_8nm_665nm.hdf5 # update as needed
+  h5_path: ${oc.env:MQED_ROOT,${hydra:runtime.cwd}}/data/GF_cache/Fresnel_GF_planar_Ag_height_8nm_665nm.hdf5 # update as needed
 
 #Material information
 material:
@@ -498,7 +501,7 @@ simulation:
   lambda_nm: 665        # wavelength of emitter in nm
 
 # Green's function data simulation method
-  gf_method: Frensel  # 'BEM' or 'Frensel'
+  gf_method: Fresnel  # 'BEM' or 'Fresnel'
 
 
 # dipoles / orientation
@@ -524,30 +527,30 @@ solver:
 output:
   filename: ${simulation.gf_method}_${material.name}_${material.geometry}_${simulation.lambda_nm}nm_N${simulation.Nmol}.hdf5
 ```
-The Result is under the `Beta_Test/Qdyn/Frensel_silver_planar_665nm_N30/hdf5` as reference.
+The result is under `Beta_Test/Qdyn/Fresnel_silver_planar_665nm_N30/hdf5` as reference.
 
-**Step4** Run `mqed_plot_msd`, this command will generate a Mean Square Displacement (MSD) under the subdirectory `outputs/plot_msd/Y-M-D/H-M-S/`. User can modify the file name as their preference. The relavent configs under `configs/plots/msd.yaml` is:
+**Step4** Run `mqed_plot_msd`; this command generates Mean Square Displacement (MSD) under `outputs/plot_msd/Y-M-D/H-M-S/`. You can modify the filename as needed. The relevant config in `configs/plots/msd.yaml` is:
 ```bash
   - label: "planar"
-    use_latest_glob: "${oc.env:MQED_ROOT,${hydra:runtime.cwd}}/data/QDyn_cache/intermol_8nm/Frensel_silver_planar_665nm_N30.hdf5"  # or using "outputs/Lindblad/.../qdyn_result.hdft"
+    use_latest_glob: "${oc.env:MQED_ROOT,${hydra:runtime.cwd}}/data/QDyn_cache/intermol_8nm/Fresnel_silver_planar_665nm_N30.hdf5"  # or using "outputs/Lindblad/.../qdyn_result.hdft"
     style: "-"         # matplotlib line format
     lw: 1.5
 ```
-If user want to compare multiple plots, just need to copy-paste same format but change the data resource in `use_last_glob`. The reference for the plot result is:
+If you want to compare multiple plots, copy the same format and change the data resource in `use_latest_glob`. The reference plot is:
   <p align="center">
     <img src="Beta_Test/msd/planar_silver_initial_msd_comparison.png" alt="Reference result for Step 4" width="500">
   </p>
 
 If user wants to change the plot setting, like fontsize, label size etc, modify directly in the yaml file.
 
-**Step5** Run `mqed_plot_PR`, this command will generate a Participation Ratio (PR) under the subdirectory `outputs/plot_msd/Y-M-D/H-M-S/`. User can modify the file name similar as introduced in Step 4. The relavent configs under `configs/plots/pr.yaml` is: 
+**Step5** Run `mqed_plot_PR`; this command generates Participation Ratio (PR) under `outputs/plot_msd/Y-M-D/H-M-S/`. You can modify the filename similarly as in Step 4. The relevant config in `configs/plots/pr.yaml` is: 
 ```bash
   - label: "planar"
-    use_latest_glob: "${oc.env:MQED_ROOT,${hydra:runtime.cwd}}/data/QDyn_cache/intermol_8nm/Frensel_silver_planar_665nm_N30.hdf5"  # or using "outputs/Lindblad/.../qdyn_result.hdft"
+    use_latest_glob: "${oc.env:MQED_ROOT,${hydra:runtime.cwd}}/data/QDyn_cache/intermol_8nm/Fresnel_silver_planar_665nm_N30.hdf5"  # or using "outputs/Lindblad/.../qdyn_result.hdft"
     style: "-"         # matplotlib line format
     lw: 1.5
 ```
-If user want to compare multiple plots, just need to copy-paste same format but change the data resource in `use_last_glob` as introduced in Step 4. The reference for the plot result is:
+If you want to compare multiple plots, copy the same format and change the data resource in `use_latest_glob` as introduced in Step 4. The reference plot is:
   <p align="center">
     <img src="Beta_Test/PR/planar_silver_initial_pr_comparison.png" alt="Reference result for Step 5" width="500">
   </p>
@@ -611,7 +614,7 @@ Open `docs/build/html/index.html` in a browser. (You can also host these on Read
 
 ## License
 
-**TBD.** Choose a license (MIT, BSD‑3‑Clause, or Apache‑2.0 are common). Add a `LICENSE` file at the repository root and update the badge above.
+License file is not yet included. Choose a license (MIT, BSD‑3‑Clause, or Apache‑2.0 are common), add a `LICENSE` file at the repository root, and update the badge above.
 
 ---
 

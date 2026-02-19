@@ -12,7 +12,7 @@ paths:
   root: ${oc.env:MQED_ROOT,${hydra:runtime.cwd}}
   data_dir: ${paths.root}/mqed/BEM
 
-  dgf_h5: ${paths.data_dir}/Frensel_result/result_Ag_2_nm.hdf5
+  dgf_h5: ${paths.data_dir}/Fresnel_result/result_Ag_2_nm.hdf5
   bem_plane_xlsx: ${paths.data_dir}/BEM_result/dipole_silver_2nm_results.xlsx
   bem_vacuum_xlsx: ${paths.data_dir}/BEM_result/dipole_vacuum_2nm_results.xlsx
 

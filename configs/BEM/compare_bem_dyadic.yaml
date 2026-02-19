@@ -10,7 +10,7 @@ io:
   xlsx_path: ${oc.env:MQED_ROOT,${hydra:runtime.cwd}}/mqed/BEM/BEM_GF_sample/dipole_silver_2nm_GF_${sim.lambda_nm}nm.xlsx
   sheet: DyadicG
   peff_csv: ${oc.env:MQED_ROOT,${hydra:runtime.cwd}}/mqed/BEM/BEM_GF_sample/${sim.lambda_nm}nm/peff_vs_lambda_${sim.lambda_nm}nm_${sim.Rx_min_nm}nm.csv
-  fresnel_h5: ${oc.env:MQED_ROOT,${hydra:runtime.cwd}}/mqed/BEM/Frensel_result/result_Ag_2nm_${sim.lambda_nm}nm.hdf5
+  fresnel_h5: ${oc.env:MQED_ROOT,${hydra:runtime.cwd}}/mqed/BEM/Fresnel_result/result_Ag_2nm_${sim.lambda_nm}nm.hdf5
   out_csv: bem_vs_fresnel.csv
 
 sim:

@@ -9,7 +9,7 @@ hydra:
 curves:
   # Example stationary vs disorder-avg
   - label: "Fresnel (stationary)"
-    use_latest_glob: "${oc.env:MQED_ROOT,${hydra:runtime.cwd}}/data/QDyn_cache/Frensel_silver_stationary_665nm.hdf5"
+    use_latest_glob: "${oc.env:MQED_ROOT,${hydra:runtime.cwd}}/data/QDyn_cache/Fresnel_silver_stationary_665nm.hdf5"
     style: "-"
     lw: 1.6
   - label: "BEM (stationary)"

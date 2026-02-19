@@ -18,6 +18,10 @@ material:
   geometry: nanorod # or 'sphere', 'planar', match with your simulation to avoid confusion.
 
 observables:
+  - name: root_MSD
+    kind: derived
+    enabled: true
+
   - name: X_shift
     kind: operator
 
@@ -61,7 +65,7 @@ simulation:
   lambda_nm: 665        # wavelength of emitter in nm
 
 # Green's function data simulation method
-  gf_method: Frensel  # 'BEM' or 'Frensel'
+  gf_method: Fresnel
 
 
 # dipoles / orientation

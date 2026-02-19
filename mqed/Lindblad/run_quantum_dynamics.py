@@ -1,19 +1,17 @@
 import hydra
-from omegaconf import  DictConfig
 import numpy as np
-import h5py
-from loguru import logger
+from hydra.core.hydra_config import HydraConfig
 from pathlib import Path
 from qutip import fock, fock_dm
-from typing import Dict, Optional, Tuple, Any
+from typing import Any, Dict, Optional, Tuple
 
+from loguru import logger
+from omegaconf import DictConfig
 
-
-from mqed.Lindblad.quantum_dynamics import SimulationConfig, LindbladDynamics, NonHermitianSchDynamics
+from mqed.Lindblad.quantum_dynamics import LindbladDynamics, NonHermitianSchDynamics, SimulationConfig
+from mqed.Lindblad.quantum_operator import ipr_callable, msd_operator, position_operator, site_population_operator
 from mqed.utils.dgf_data import load_gf_h5
 from mqed.utils.logging_utils import setup_loggers_hydra_aware
-from hydra.core.hydra_config import HydraConfig
-from mqed.Lindblad.quantum_operator import msd_operator, position_operator, ipr_callable, site_population_operator
 from mqed.utils.save_hdf5 import save_dx_h5
 
 def build_observable(item: Dict[str, Any], *, dim: int, d_nm: float, Nmol: int, init_site: int) -> Tuple[str, object]:
@@ -45,7 +43,38 @@ def build_observable(item: Dict[str, Any], *, dim: int, d_nm: float, Nmol: int, 
     logger.error(f"Unknown observable name: {name!r}")
     raise ValueError(f"Unknown observable name: {name!r}")
 
-def app_run(cfg:DictConfig, output_dir: Optional[Path]=None):
+
+def _build_observables(
+    obs_cfg,
+    *,
+    dim: int,
+    d_nm: float,
+    Nmol: int,
+    init_site: int,
+):
+    e_ops = {}
+    compute_root_msd = False
+
+    for item in obs_cfg:
+        name = str(item.get("name", ""))
+        if name == "root_MSD":
+            compute_root_msd = bool(item.get("enabled", True))
+            logger.info(f"root_MSD output enabled: {compute_root_msd}")
+            continue
+
+        key, obj = build_observable(
+            item,
+            dim=dim,
+            d_nm=d_nm,
+            Nmol=Nmol,
+            init_site=init_site,
+        )
+        e_ops[key] = obj
+
+    return e_ops, compute_root_msd
+
+
+def app_run(cfg: DictConfig, output_dir: Optional[Path] = None):
     if output_dir is None:
         try:
             output_dir = Path(HydraConfig.get().runtime.output_dir)
@@ -111,16 +140,13 @@ def app_run(cfg:DictConfig, output_dir: Optional[Path]=None):
     #         "IPR_site": lambda t, st: ipr_callable(t, st, Nmol=sim_cfg.Nmol),}
 
     obs_cfg = getattr(cfg, "observables", []) or []
-    e_ops: dict[str, object] = {}
-    for item in obs_cfg:
-        key, obj = build_observable(
-            item,
-            dim=sim_cfg.Nmol + 1,
-            d_nm=sim_cfg.d_nm,
-            Nmol=sim_cfg.Nmol,
-            init_site=cfg.initial_state.site_index,
-        )
-        e_ops[key] = obj
+    e_ops, compute_root_msd = _build_observables(
+        obs_cfg,
+        dim=sim_cfg.Nmol + 1,
+        d_nm=sim_cfg.d_nm,
+        Nmol=sim_cfg.Nmol,
+        init_site=cfg.initial_state.site_index,
+    )
 
 
     # 5) Evolve
@@ -132,38 +158,51 @@ def app_run(cfg:DictConfig, output_dir: Optional[Path]=None):
     # ex2 = np.asarray(result.expectations["X_shift2"])
     # dx = np.sqrt(np.maximum(0.0, ex2 - ex1**2))
 
-    extras = {}
-    if "X_shift" in result.expectations and "X_shift2" in result.expectations:
-        x  = np.asarray(result.expectations["X_shift"])
+    dx = None
+    dx_std = None
+    if compute_root_msd:
+        if "X_shift" not in result.expectations or "X_shift2" not in result.expectations:
+            raise ValueError(
+                "root_MSD requested, but both 'X_shift' and 'X_shift2' observables are required."
+            )
+
+        x = np.asarray(result.expectations["X_shift"])
         x2 = np.asarray(result.expectations["X_shift2"])
         dx = np.sqrt(np.maximum(0.0, x2 - x**2))
+        dx_std = np.zeros_like(dx)
 
 
     # 6) Save to HDF5
     outfile = output_dir / cfg.output.filename
     # states = getattr(result, 'states', None)
     logger.info(f"Saving results to {outfile.absolute()}")
+    mode = str(cfg.simulation.get("mode", "stationary"))
+    n_realizations = 1
+    if mode == "disorder" and hasattr(cfg, "disorder"):
+        n_realizations = int(cfg.disorder.get("n_realizations", 1))
+
     save_dx_h5(
-    outfile=outfile,
-    t_ps=result.tlist,
-    dx_mean_nm=dx,
-    dx_std_nm=np.zeros_like(dx),      # single run → zero spread
-    method=method,
-    mode="stationary",
-    n_realizations=1,
-    expectations=result.expectations, # keeps raw expectations if you want
+        outfile=outfile,
+        t_ps=result.tlist,
+        dx_mean_nm=dx,
+        dx_std_nm=dx_std,
+        method=method,
+        mode=mode,
+        n_realizations=n_realizations,
+        expectations=result.expectations,
+        extra_attrs={"root_MSD_enabled": compute_root_msd},
     )
 
 
     logger.success(f"Simulation complete. Output saved to: {outfile.absolute()}")
 
 @hydra.main(config_path="../../configs/Lindblad", config_name="quantum_dynamics", version_base=None)
-def mqed_lindblad(cfg:DictConfig):
+def mqed_lindblad(cfg: DictConfig):
     cfg.solver.method = "Lindblad"
     app_run(cfg)
 
 @hydra.main(config_path="../../configs/Lindblad", config_name="quantum_dynamics_nhse", version_base=None)
-def mqed_nhse(cfg:DictConfig):
+def mqed_nhse(cfg: DictConfig):
     cfg.solver.method = "NonHermitian"
     app_run(cfg)
 

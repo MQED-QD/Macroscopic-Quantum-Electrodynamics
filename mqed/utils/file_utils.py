@@ -26,8 +26,11 @@ def _resolve_input_path(curve_cfg) -> Path:
         return _resolve_path(curve_cfg.path)
     if getattr(curve_cfg, "use_latest_glob", None):
         base = os.environ.get("MQED_ROOT", os.environ.get("PWD", "."))
-        newest = _find_newest(os.path.join(base, curve_cfg.use_latest_glob))
+        pattern = os.path.expandvars(os.path.expanduser(str(curve_cfg.use_latest_glob)))
+        if not os.path.isabs(pattern):
+            pattern = os.path.join(base, pattern)
+        newest = _find_newest(pattern)
         if newest is None:
-            raise FileNotFoundError(f"No files for pattern: {curve_cfg.use_latest_glob}")
+            raise FileNotFoundError(f"No files for pattern: {pattern}")
         return newest
     raise ValueError("Each curve needs either 'path' or 'use_latest_glob'.")

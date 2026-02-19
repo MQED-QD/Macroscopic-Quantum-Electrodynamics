@@ -18,12 +18,12 @@ curves:
     lw: 2
 
   # - label: "planar"
-  #   use_latest_glob: "${oc.env:MQED_ROOT,${hydra:runtime.cwd}}/data/QDyn_cache/intermol_8nm/Frensel_silver_planar_665nm_N30.hdf5"  # or using "outputs/Lindblad/.../qdyn_result.hdft"
+  #   use_latest_glob: "${oc.env:MQED_ROOT,${hydra:runtime.cwd}}/data/QDyn_cache/intermol_8nm/Fresnel_silver_planar_665nm_N30.hdf5"  # or using "outputs/Lindblad/.../qdyn_result.hdft"
   #   style: "-"         # matplotlib line format
   #   lw: 2
 
   # - label: "planar_NN"
-  #   use_latest_glob: "${oc.env:MQED_ROOT,${hydra:runtime.cwd}}/data/QDyn_cache/intermol_8nm/Frensel_silver_planar_665nm_N30_NN.hdf5"  # or using "outputs/Lindblad/.../qdyn_result.hdft"
+  #   use_latest_glob: "${oc.env:MQED_ROOT,${hydra:runtime.cwd}}/data/QDyn_cache/intermol_8nm/Fresnel_silver_planar_665nm_N30_NN.hdf5"  # or using "outputs/Lindblad/.../qdyn_result.hdft"
   #   style: "--"         # matplotlib line format
   #   lw: 2
 
@@ -38,7 +38,7 @@ curves:
   #   lw: 2
   
   # - label: "free space"
-  #   use_latest_glob: "${oc.env:MQED_ROOT,${hydra:runtime.cwd}}/data/QDyn_cache/height_8nm/Frensel_vacuum_planar_665nm_N50.hdf5"  # or using "outputs/Lindblad/.../qdyn_result.hdft"
+  #   use_latest_glob: "${oc.env:MQED_ROOT,${hydra:runtime.cwd}}/data/QDyn_cache/height_8nm/Fresnel_vacuum_planar_665nm_N50.hdf5"  # or using "outputs/Lindblad/.../qdyn_result.hdft"
   #   style: "-."         # matplotlib line format
   #   lw: 1.5
 
@@ -65,7 +65,7 @@ plot_settings:
   xscale: linear
   yscale: linear
   xlim: [0,150]
-  ylim: [0, Null]
+  ylim: [0, null]
 
   font:
     family: null        # e.g. "DejaVu Sans", "Times New Roman"; null keeps default

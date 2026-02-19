@@ -1,25 +1,35 @@
 # setup.py
 
-from setuptools import setup, find_packages
+from setuptools import find_packages, setup
 
 setup(
-    # Core package metadata
     name="mqed",
     version="0.1.0",
-    description="A tool for calculating Dyadic Green's Functions in layered media.",
-    author="Hsing-ta Chen Lab", # Change this to your name
-    author_email="", # Change this to your email
-
-    # Automatically find all Python packages in your project
+    description="A workflow for calculating Dyadic Green's Functions in layered media and nanorod(supported by MNPBEM toolbox), and using them to compute dipole-dipole interactions and quantum dynamics.",
+    author="Guangming Liu",
+    author_email="",
     packages=find_packages(),
-
     include_package_data=True,
-
-    # List of dependencies required for the package to run
     install_requires=[
+        "gitpython",
+        "h5py",
+        "hydra-colorlog",
+        "hydra-core",
+        "hydra-optuna-sweeper",
+        "joblib",
+        "loguru",
+        "matplotlib",
+        "numpy",
+        "openpyxl",
+        "optuna",
+        "pandas",
+        "qutip",
+        "rich",
+        "rootutils",
+        "scipy",
+        "seaborn",
+        "tqdm",
     ],
-
-    # Creates the command-line tool
     entry_points={
         "console_scripts": [
             "mqed_GF_Sommerfeld = mqed.Dyadic_GF.main:run_simulation",
@@ -40,7 +50,5 @@ setup(
             "mqed_compare_enhancement = mqed.BEM.compare_enhancement:main",
         ]
     },
-
-    # Specify the minimum Python version required
-    python_requires=">=3.8",
+    python_requires=">=3.10",
 )

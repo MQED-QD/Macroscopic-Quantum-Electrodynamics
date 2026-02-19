@@ -4,7 +4,7 @@ defaults:
   - _self_
 log_file: ${hydra:runtime.output_dir}/${hydra.job.name}.log
 
-input_file: ${oc.env:MQED_ROOT,${hydra:runtime.cwd}}/data/GF_cache/Frensel_Ag_2_nm_665nm.hdf5 # 
+input_file: ${oc.env:MQED_ROOT,${hydra:runtime.cwd}}/data/GF_cache/Fresnel_Ag_2_nm_665nm.hdf5 # 
 
 orientations:
   donor:    { theta_deg: 90.0, phi_deg: "magic" }
