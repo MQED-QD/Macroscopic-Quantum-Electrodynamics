@@ -41,9 +41,9 @@ simulation:
     max: 500.0
     points: 1
   position:
-    zD: 5.0e-9
-    zD_nm: 5 # Key for name
-    zA: 5.0e-9
+    zD: 8.0e-9
+    zD_nm: 8 # Key for name
+    zA: 8.0e-9
     Rx_nm: # New section to define the range of horizontal distances
       start: 0.0
       stop: 300.0
@@ -58,4 +58,4 @@ simulation:
     split_propagating: true  # if true, split at k0 to treat propagating/evanescent separately
 
 output:
-  filename: "Frensel_GF_planar_${simulation.material}_height_${simulation.position.zD_nm}nm.hdf5"
+  filename: "Fresnel_GF_planar_${simulation.material}_height_${simulation.position.zD_nm}nm.hdf5"
