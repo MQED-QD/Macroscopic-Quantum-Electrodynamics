@@ -7,14 +7,27 @@ Quantum Dynamics
 Goal
 ----
 
-In this tutorial you will compute the **quantum dynamics for open quantum system** 
-using the Lindblad master equation and non-Hermitian Schrödinger equation solvers implemented in MQED-QD.
-The orginal implementation of the Lindblad solver is based on the `QuTiP <https://qutip.org/>`_ package.
-The input parameters are specified in a YAML configuration file, and the output is written to an HDF5 file.
+In this tutorial you will compute the **quantum dynamics for an open quantum
+system** using the Lindblad master equation and non-Hermitian Schrödinger
+equation (NHSE) solvers implemented in MQED.
+The Lindblad solver is built on top of the
+`QuTiP <https://qutip.org/>`_ package, while the NHSE solver uses a custom
+implementation.
+All input parameters are specified in a YAML configuration file, and the
+output is written to an HDF5 file.
 
 By the end you will know how to:
-- run the ``mqed_lindblad`` and ``mqed_nhse`` commands with default and custom parameters.
+
+- run the ``mqed_lindblad`` and ``mqed_nhse`` commands with default and custom
+  parameters,
+- switch between the Lindblad and non-Hermitian solvers,
 - locate and interpret the HDF5 output file.
+
+.. seealso::
+
+   See the companion theory documentation for the derivation of the Lindblad
+   and non-Hermitian equations of motion (citation forthcoming).
+
 
 Prerequisites
 -------------
@@ -22,165 +35,199 @@ Prerequisites
 Make sure you have installed the package and activated the environment as
 described in :doc:`/installation`.
 
-You also need a cached Green's function HDF5 file.
-See :ref:`tutorial-gf-sommerfeld` for how to generate one.
+This tutorial uses example data bundled under ``data/example/GF_data/``.
+To generate your own Green's function cache, see
+:ref:`tutorial-gf-sommerfeld`.
+
+.. tip::
+
+   The example data ships with the repository under ``data/example/``.
+   No prior simulation run is required to follow this tutorial.
+
 
 Quick start
 -----------
 
-Run from the repository root with all defaults:
+Run the Lindblad solver from the repository root with all defaults:
+
 .. code-block:: bash
 
    mqed_lindblad
 
-Or for the non-Hermitian approach (recommended in our simulations):
+Or use the non-Hermitian approach (recommended for large systems):
+
 .. code-block:: bash
 
    mqed_nhse
 
+
 Lindblad vs NHSE
-----------------
+-----------------
+
+Both solvers propagate the excitonic dynamics of :math:`N` emitters
+coupled through the dyadic Green's function.
+
+- **Lindblad** — full density-matrix evolution via the Lindblad master
+  equation, implemented with QuTiP's ``mesolve``.  Scales as
+  :math:`O(N^2)` in memory.
+- **NHSE** — state-vector evolution under a non-Hermitian effective
+  Hamiltonian.  Much lighter for large :math:`N` and yields identical
+  expectation values for single-excitation problems.
+
+.. tip::
+
+   For transport studies with :math:`N \gtrsim 50`, the NHSE solver is
+   typically an order of magnitude faster.
 
 
-See (put citation later) for the theoretical background.
+Configuration reference
+-----------------------
 
-Configuration walkthrough
--------------------------
-The non-Hermitian Schrödinger equation YAML file looks like:
+The NHSE configuration file
+(``configs/Lindblad/quantum_dynamics_nhse.yaml``) is reproduced below.
+The Lindblad configuration follows the same structure and is located at
+``configs/Lindblad/quantum_dynamics.yaml``.
+
 .. code-block:: yaml
-   #quantum_dynamics_nhse.yaml
+
+   # ── Green's function input ─────────────────────────────
    greens:
-      h5_path: ${oc.env:MQED_ROOT,${hydra:runtime.cwd}}/data/BEM_cache/BEM_GF_planar_Ag_665nm_height_2nm.hdf5 # update as needed
+     h5_path: ${oc.env:MQED_ROOT,${hydra:runtime.cwd}}/data/example/GF_data/BEM_GF_planar_Ag_665nm_height_2nm.hdf5
 
-   height: 2 # nm, for naming purposes only, the actual height is read from the GF file
-   #Material information
+   height: 2                    # nm (for naming only; actual height is read from the GF file)
+
+   # ── Material information ───────────────────────────────
    material:
-      name: silver
-      geometry: planar # or 'sphere', 'planar', match with your simulation to avoid confusion.
+     name: silver
+     geometry: planar            # or 'sphere', 'nanorod', etc.
 
+   # ── Observables ────────────────────────────────────────
    observables:
-   - name: root_MSD
-      kind: derived
-      enabled: true
+     - name: root_MSD
+       kind: derived
+       enabled: true
 
-   - name: X_shift
-      kind: operator
+     - name: X_shift
+       kind: operator
 
-   - name: X_shift2
-      kind: operator
-   
-   # conditional versions (recommended for NHSE transport comparison)
-   - name: X_shift_cond
-      type: callable
+     - name: X_shift2
+       kind: operator
 
-   - name: X_shift2_cond
-      type: callable
+     # Conditional versions (recommended for NHSE transport comparison)
+     - name: X_shift_cond
+       type: callable
 
-   - name: IPR_site
-      kind: callable
-      params:
-         Nmol: ${simulation.Nmol}    # pass through from your sim config
+     - name: X_shift2_cond
+       type: callable
 
-   # # Optionally: one or many site populations
-   # - name: pop_site
-   #   kind: operator
-   #   params:
-   #     site: 1                     # 1-based site index (your code uses +1 internally)
+     - name: IPR_site
+       kind: callable
+       params:
+         Nmol: ${simulation.Nmol}
 
-   # Add more site populations by repeating the item:
-   # - { name: pop_site, kind: operator, params: { site: 10 } }
-   # Simulation controls
+     # Optionally: site populations
+     # - name: pop_site
+     #   kind: operator
+     #   params:
+     #     site: 1                   # 1-based site index
+
+   # ── Simulation controls ────────────────────────────────
    simulation:
-   # time grid in picoseconds
-      t_ps:
-         start: 0.0
-         stop: 150.0
-         output_step: 5e-3
+     # Time grid (picoseconds)
+     t_ps:
+       start: 0.0
+       stop: 150.0
+       output_step: 5e-3
 
-      coupling_limit:
-         enable: false
-         V_hop_radius: 1
-         keep_V_on_site: false
-         Gamma_rule: leave # "leave" | "same_as_V" | "diagonal_only" | "limit_by_hops"
-         Gamma_hop_radius: None
-         keep_Gamma_on_site: true
+     coupling_limit:
+       enable: false
+       V_hop_radius: 1
+       keep_V_on_site: false
+       Gamma_rule: leave           # "leave" | "same_as_V" | "diagonal_only" | "limit_by_hops"
+       Gamma_hop_radius: null
+       keep_Gamma_on_site: true
 
-      # system
-      Nmol: 100 # number of sites
-      d_nm: 3 # lattice spacing (nm)
+     Nmol: 100                     # number of emitter sites
+     d_nm: 3                       # lattice spacing (nm)
 
-      #emitter frequency
-      lambda_nm: 665        # wavelength of emitter in nm
+     lambda_nm: 665                # emitter wavelength (nm)
+     gf_method: BEM                # 'BEM' or 'Fresnel'
 
-      # Green's function data simulation method
-      gf_method: BEM  # 'BEM' or 'Fresnel'
+     # Dipole orientations
+     mu_D_debye: 3.8
+     mu_A_debye: 3.8
+     theta_deg: 90.0
+     phi_deg: 'magic'              # or a numeric value
+     mode: stationary              # or 'disorder'
+     # disorder_sigma_phi_deg: 15.0  # uncomment for disordered orientations
 
-
-      # dipoles / orientation
-      mu_D_debye: 3.8
-      mu_A_debye: 3.8
-      theta_deg: 90.0
-      phi_deg: 'magic' # or a number
-      mode: stationary # or 'disorder'
-      # disorder_sigma_phi_deg: 15.0 # uncomment for disordered orientations
-
-
-   # Initial condition
+   # ── Initial condition ──────────────────────────────────
    initial_state:
-   site_index: 1 # start the exciton at site |1>
+     site_index: 1                 # start the exciton at site |1⟩
 
-
-   # Solver selection
+   # ── Solver ─────────────────────────────────────────────
    solver:
-   method: NonHermitian # 'Lindblad' or 'NonHermitian'
+     method: NonHermitian           # 'Lindblad' or 'NonHermitian'
 
-
-   # Output file (goes under Hydra's run dir)
+   # ── Output ─────────────────────────────────────────────
    output:
-   filename: ${simulation.gf_method}_${material.name}_${material.geometry}_${simulation.lambda_nm}nm_N${simulation.Nmol}_height_${height}nm_inter_${simulation.d_nm}nm.hdf5
+     filename: ${simulation.gf_method}_${material.name}_${material.geometry}_${simulation.lambda_nm}nm_N${simulation.Nmol}_height_${height}nm_inter_${simulation.d_nm}nm.hdf5
 
-The Lindblad solver configs are inside ``configs/Lindblad/quantum_dynamics.yaml``. We separate these two configs for convenience.
-Key parameters
---------------
-
-
-.. list-table::
+.. list-table:: Key parameters at a glance
    :header-rows: 1
-   :widths: 25 50 25
+   :widths: 30 50 20
 
    * - Parameter
      - Description
      - Default
-   * - ``h5_path``
-     - Input path of dyadic Green's function hdf5 file. 
-     - ``${oc.env:MQED_ROOT,${hydra:runtime.cwd}}/data/BEM_cache/BEM_GF_planar_Ag_665nm_height_2nm.hdf5 # update as needed``
-   * - ``Nmol``
-     - Number of emitters in simulation.
+   * - ``greens.h5_path``
+     - Path to the cached dyadic Green's function HDF5 file.
+     - See YAML above
+   * - ``simulation.Nmol``
+     - Number of emitter sites in the chain.
      - ``100``
-   * - ``mu_D_debye``
-     - dipole moment intensity of donor in Debye unit, same apply to ``mu_A_debye`` for acceptor
-     - ``3.8``
-   * - ``d_nm``
-     - intermolecular distance for the simulation
+   * - ``simulation.d_nm``
+     - Intermolecular (lattice) spacing in nm.
      - ``3``
-   * - ``coupling_limit.enabled, coupling_limit.V_hop_radius``
-     - This is a tool to help user truncate the dipole-dipole interaction (DDI). If enabled, user can choose ``V_hop_radius`` to **1 for nearest-neighbor truncation**
-   * - ''false``
+   * - ``simulation.mu_D_debye``
+     - Donor transition dipole moment (Debye).  ``mu_A_debye`` is the same
+       for the acceptor.
+     - ``3.8``
+   * - ``simulation.t_ps``
+     - Time grid: ``start``, ``stop``, and ``output_step`` in picoseconds.
+     - ``0 – 150 ps``, step ``5e-3``
+   * - ``coupling_limit.enable``
+     - Truncate dipole-dipole interaction to a finite hopping radius.
+     - ``false``
+   * - ``coupling_limit.V_hop_radius``
+     - Number of nearest-neighbour hops retained (when ``enable: true``).
+     - ``1``
+   * - ``solver.method``
+     - Solver backend: ``Lindblad`` (QuTiP) or ``NonHermitian``.
+     - ``NonHermitian``
+
+
 Expected output
 ---------------
 
-.. TODO: Describe what the command prints and what files it creates, e.g.:
-   The solver writes an HDF5 file to the Hydra output directory containing
-   the time-evolved density matrix / state vector ...
 After the simulation finishes, a success message is printed to the terminal
 (and to the Hydra log file
 ``outputs/NonHermitian/.../NonHermitian.log``):
 
 .. code-block:: text
 
-   2025-10-24 11:40:02.818 | SUCCESS | mqed.Lindblad.run_quantum_dynamics:app_run:229 
+   2025-10-24 11:40:02.818 | SUCCESS | mqed.Lindblad.run_quantum_dynamics:app_run:229
    - Simulation complete. Output saved to:
      /.../MacroscopicQED/outputs/NonHermitian/.../NAME.hdf5
+
+The HDF5 file contains:
+
+- **time grid** — the array of time points in picoseconds,
+- **state vectors / density matrices** — the time-evolved quantum state,
+- **observables** — MSD, IPR, site populations, and any other quantities
+  listed in the ``observables`` section of the configuration.
+
+
 What's next?
 ------------
 

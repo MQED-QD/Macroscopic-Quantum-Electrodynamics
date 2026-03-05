@@ -26,15 +26,10 @@ Key Features
    getting-started
 
 .. toctree::
-   :maxdepth: 1
+   :maxdepth: 2
    :caption: Tutorials
 
    tutorials/index
-   tutorials/GF_Sommerfeld
-   tutorials/field-enhancement
-   tutorials/quantum-dynamics
-   tutorials/plotting
-   tutorials/bem
 
 .. toctree::
    :maxdepth: 1

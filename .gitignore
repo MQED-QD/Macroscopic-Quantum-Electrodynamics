@@ -1,6 +1,7 @@
 # Personal simulation results
 outputs/
-data/
+data/*
+!data/example/
 test/BEM/
 
 # Python cache and compiled files
