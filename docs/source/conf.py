@@ -28,7 +28,26 @@ extensions = [
     "sphinx.ext.mathjax",      # render .. math:: and inline math
 ]
 autosummary_generate = True
-autodoc_mock_imports = ["joblib"]
+autodoc_mock_imports = [
+    # Heavy scientific / simulation deps not needed for doc builds
+    "joblib",
+    "numpy",
+    "scipy",
+    "pandas",
+    "matplotlib",
+    "h5py",
+    "qutip",
+    "meep",
+    "mpb",
+    "pyvista",
+    "tqdm",
+    "mpi4py",
+    # Hydra / OmegaConf
+    "hydra",
+    "omegaconf",
+    # Logging
+    "loguru",
+]
 
 templates_path = ['_templates']
 exclude_patterns = []
