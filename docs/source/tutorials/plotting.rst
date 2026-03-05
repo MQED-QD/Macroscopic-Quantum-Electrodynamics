@@ -55,14 +55,41 @@ Other plot types follow the same pattern:
    mqed_plot_PR
    mqed_compare_enhancement
 
+
+Customising the run
+-------------------
+
+**Override individual parameters** on the command line using
+`Hydra <https://hydra.cc/>`_ syntax:
+
+.. code-block:: bash
+
+   mqed_plot_msd plot_settings.xlim=[0,200] plot_settings.dpi=300
+
+**Use a different YAML** in the same config directory
+(``configs/plots/``):
+
+.. code-block:: bash
+
+   mqed_plot_msd --config-name=my_msd
+
+**Use a YAML from an arbitrary directory:**
+
+.. code-block:: bash
+
+   mqed_plot_msd --config-dir=/path/to/my/configs --config-name=my_msd
+
+The same flags work for all plot commands (``mqed_plot_sqrt_msd``,
+``mqed_plot_IPR``, ``mqed_plot_PR``, ``mqed_compare_enhancement``).
+
 .. tip::
 
-   Override any key on the command line using
-   `Hydra <https://hydra.cc/>`_ syntax, for example:
+   You can combine ``--config-name`` (or ``--config-dir``) with individual
+   parameter overrides:
 
    .. code-block:: bash
 
-      mqed_plot_msd plot_settings.xlim=[0,200]
+      mqed_plot_msd --config-name=my_msd plot_settings.ylim=[0,500]
 
 
 Available plot commands
@@ -217,9 +244,19 @@ Plot settings
      - Scientific notation formatting for the y-axis.
      - enabled, ``"sci"``
 
-The ``compare_enhancement.yaml`` configuration
-(``configs/BEM/compare_enhancement.yaml``) shares the same structure but adds
-GF-specific settings and vertical reference lines:
+Comparing field enhancement across simulations
+^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+The ``compare_enhancement`` command applies the same field-enhancement
+analysis introduced in :ref:`tutorial-field-enhancement`, but extends it to
+**multiple simulation results at once**.  Instead of analysing a single
+Green's function file, you list several curves — each pointing to a different
+HDF5 cache — so you can compare, for example, different emitter heights or
+geometries on a single plot.
+
+The configuration file (``configs/BEM/compare_enhancement.yaml``) shares the
+same curve / plot-settings structure as above, but adds ``gf_settings`` for
+dipole orientations and optional vertical reference lines:
 
 .. code-block:: yaml
 
@@ -264,9 +301,12 @@ GF-specific settings and vertical reference lines:
        lw: 1.5
        alpha: 0.8
 
-The ``vlines`` settings add vertical dashed lines at the specified
-x-values (3 nm and 6 nm in this example) to highlight specific
-donor--acceptor distances of interest.
+.. note::
+
+   The ``vlines`` block adds **vertical dashed reference lines** at the
+   specified x-positions (3 nm and 6 nm in this example).  Use them to
+   highlight specific donor--acceptor distances of interest — for instance,
+   nearest-neighbour separations or experimentally relevant spacings.
 
 Expected output
 ---------------
@@ -295,7 +335,7 @@ The participation ratio (PR) starts from 1, so you will typically set:
 .. code-block:: yaml
 
    plot_settings:
-     ylim: [0, null]
+     ylim: [1, null]
 
 The same multi-curve data produces a PR plot like:
 

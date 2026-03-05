@@ -20,4 +20,4 @@ sim:
   interpolate_rx: true
 
 compare:
-  components: ["Gzz", "Gxz", "Gzx", "Gxx"]
+  components: ["Gxx", "Gxy", "Gxz", "Gyx", "Gyy", "Gyz", "Gzx", "Gzy", "Gzz"]

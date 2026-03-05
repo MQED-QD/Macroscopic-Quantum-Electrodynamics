@@ -70,7 +70,7 @@ mqed_nhse simulation.Nmol=50 simulation.d_nm=4.0
 ```
 
 For step-by-step walkthroughs, see the
-**[Tutorials](https://mqed-transport.github.io/Macroscopic-Quantum-Electrodynamics/tutorials/index.html)**.
+**[Tutorials](https://mqed-qd.github.io/Macroscopic-Quantum-Electrodynamics/tutorials/index.html)**.
 
 ---
 
@@ -135,7 +135,7 @@ Macroscopic-Quantum-Electrodynamics/
 ## Documentation
 
 **Full documentation:**
-[https://mqed-transport.github.io/Macroscopic-Quantum-Electrodynamics/](https://mqed-transport.github.io/Macroscopic-Quantum-Electrodynamics/)
+[https://mqed-transport.github.io/Macroscopic-Quantum-Electrodynamics/](https://mqed-qd.github.io/Macroscopic-Quantum-Electrodynamics/index.html)
 
 Build locally:
 

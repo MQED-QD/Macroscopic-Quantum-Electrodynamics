@@ -84,8 +84,6 @@ def main(cfg: DictConfig):
         out[f"Im_{comp}_BEM"] = np.imag(bem)
         out[f"Re_{comp}_Fresnel"] = np.real(fr)
         out[f"Im_{comp}_Fresnel"] = np.imag(fr)
-        out[f"Re_{comp}_diff"] = np.real(bem - fr)
-        out[f"Im_{comp}_diff"] = np.imag(bem - fr)
 
     df_out = pd.DataFrame(out)
     df_out.to_csv(output_dir / cfg.io.out_csv, index=False)

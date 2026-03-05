@@ -59,14 +59,38 @@ plotted by default.
    The example data ships with the repository under ``data/example/``.
    No prior simulation run is required to follow this tutorial.
 
+
+Customising the run
+-------------------
+
+**Override individual parameters** on the command line using
+`Hydra <https://hydra.cc/>`_ syntax:
+
+.. code-block:: bash
+
+   mqed_FE orientations.donor.phi_deg=0.0 orientations.acceptor.phi_deg=0.0
+
+**Use a different YAML** in the same config directory
+(``configs/analysis/``):
+
+.. code-block:: bash
+
+   mqed_FE --config-name=my_FE
+
+**Use a YAML from an arbitrary directory:**
+
+.. code-block:: bash
+
+   mqed_FE --config-dir=/path/to/my/configs --config-name=my_FE
+
 .. tip::
 
-   Override any key on the command line using
-   `Hydra <https://hydra.cc/>`_ syntax, for example:
+   You can combine ``--config-name`` (or ``--config-dir``) with individual
+   parameter overrides:
 
    .. code-block:: bash
 
-      mqed_FE orientations.donor.phi_deg=0.0 orientations.acceptor.phi_deg=0.0
+      mqed_FE --config-name=my_FE plot_settings.dpi=300
 
 
 Configuration reference

@@ -61,6 +61,42 @@ Or use the non-Hermitian approach (recommended for large systems):
    mqed_nhse
 
 
+Customising the run
+-------------------
+
+**Override individual parameters** on the command line using
+`Hydra <https://hydra.cc/>`_ syntax:
+
+.. code-block:: bash
+
+   mqed_nhse simulation.Nmol=50 simulation.d_nm=4.0
+
+**Use a different YAML** in the same config directory
+(``configs/Lindblad/``):
+
+.. code-block:: bash
+
+   mqed_nhse --config-name=my_nhse_config
+
+**Use a YAML from an arbitrary directory:**
+
+.. code-block:: bash
+
+   mqed_nhse --config-dir=/path/to/my/configs --config-name=my_nhse_config
+
+The same flags work for ``mqed_lindblad``:
+
+.. code-block:: bash
+
+   mqed_lindblad --config-name=my_lindblad_config simulation.Nmol=20
+
+.. tip::
+
+   You can combine ``--config-name`` (or ``--config-dir``) with individual
+   parameter overrides.  This is useful for running the same physical setup
+   with different solver methods or lattice sizes.
+
+
 Lindblad vs NHSE
 -----------------
 

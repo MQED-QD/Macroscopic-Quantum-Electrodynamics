@@ -81,6 +81,42 @@ This generates 11 linearly spaced energies from 1.0 to 2.0 eV.
    format.
 
 
+Using a custom configuration file
+----------------------------------
+
+Every MQED command loads its default YAML from the ``configs/`` directory.
+Hydra provides two flags that let you swap the entire configuration file
+without editing code:
+
+**Use a different YAML in the same config directory**
+
+.. code-block:: bash
+
+   mqed_GF_Sommerfeld --config-name=my_GF
+
+This loads ``configs/Dyadic_GF/my_GF.yaml`` instead of the default
+``GF_Sommerfeld.yaml``.  Your custom file must live in the same
+``configs/Dyadic_GF/`` directory.
+
+**Use a YAML from an arbitrary directory**
+
+.. code-block:: bash
+
+   mqed_GF_Sommerfeld --config-dir=/path/to/my/configs --config-name=my_GF
+
+This tells Hydra to look for ``my_GF.yaml`` in ``/path/to/my/configs/``
+instead of the default config directory.
+
+.. tip::
+
+   You can combine ``--config-name`` (or ``--config-dir``) with individual
+   parameter overrides:
+
+   .. code-block:: bash
+
+      mqed_GF_Sommerfeld --config-name=my_GF simulation.energy_eV=2.0
+
+
 Configuration reference
 -----------------------
 
