@@ -129,12 +129,54 @@ Sommerfeld integral:
    e^{iK_{z,i}(k_{\rho},\,\omega)(z+z')}.
 
 
-Sommerfeld Integrals
-^^^^^^^^^^^^^^^^^^^^^
+:math:`\mathbf{M}^{(s)}` — s-wave contribution
+^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
-Both matrices are built from six Sommerfeld integrals over the in-plane
-wave vector :math:`k_\rho`, each involving the Fresnel coefficient, Bessel
-functions :math:`J_n`, and the phase factor
+.. math::
+   :label: eq-Ms
+
+   \overline{\overline{\mathbf{M}}}^{(s)}(k_{\rho}, \omega)
+   = \frac{k_{\rho}}{2\,K_{z,i}}
+   \begin{pmatrix}
+   J_0 + \cos 2\varphi\;J_2  &  \sin 2\varphi\;J_2       &  0 \\
+   \sin 2\varphi\;J_2        &  J_0 - \cos 2\varphi\;J_2  &  0 \\
+   0                          &  0                          &  0
+   \end{pmatrix},
+
+where :math:`J_n = J_n(k_\rho \rho)` are Bessel functions of the first kind.
+The *s*-wave has no :math:`z`-component because the electric field lies
+entirely in the interface plane.
+
+
+:math:`\mathbf{M}^{(p)}` — p-wave contribution
+^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+.. math::
+   :label: eq-Mp
+
+   \overline{\overline{\mathbf{M}}}^{(p)}(k_{\rho}, \omega)
+   = \frac{-k_{\rho}\,K_{z,i}}{2\,k_i^2}
+   \begin{pmatrix}
+   J_0 - \cos 2\varphi\;J_2
+      &  -\sin 2\varphi\;J_2
+      &  \dfrac{2i\,k_{\rho}}{K_{z,i}}\cos\varphi\;J_1 \\[6pt]
+   -\sin 2\varphi\;J_2
+      &  J_0 + \cos 2\varphi\;J_2
+      &  \dfrac{2i\,k_{\rho}}{K_{z,i}}\sin\varphi\;J_1 \\[6pt]
+   -\dfrac{2i\,k_{\rho}}{K_{z,i}}\cos\varphi\;J_1
+      &  -\dfrac{2i\,k_{\rho}}{K_{z,i}}\sin\varphi\;J_1
+      &  -\dfrac{2\,k_{\rho}^2}{K_{z,i}^2}\;J_0
+   \end{pmatrix}.
+
+The *p*-wave carries all the :math:`z`-components of the scattered field.
+
+
+Sommerfeld Integrals (Implementation)
+^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+For numerical evaluation, the Fresnel coefficients and common prefactors
+are absorbed into six Sommerfeld integrals over the in-plane wave vector
+:math:`k_\rho`, each involving the phase factor
 :math:`e^{i K_{z,i}(z + z')}`:
 
 .. math::
@@ -159,39 +201,6 @@ where :math:`k_0 = \omega/c`.  In the implementation
 (:mod:`mqed.Dyadic_GF.GF_Sommerfeld`) the integration is split at
 :math:`k_\rho = k_0` (the propagating/evanescent boundary) for numerical
 accuracy and evaluated with :func:`scipy.integrate.quad_vec`.
-
-
-:math:`\mathbf{M}^{(s)}` — s-wave contribution
-^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
-
-.. math::
-   :label: eq-Ms
-
-   \mathbf{M}^{(s)} =
-   \begin{pmatrix}
-   I_1 + \cos 2\varphi\;I_2  &  \sin 2\varphi\;I_2       &  0 \\
-   \sin 2\varphi\;I_2        &  I_1 - \cos 2\varphi\;I_2  &  0 \\
-   0                          &  0                          &  0
-   \end{pmatrix}.
-
-The *s*-wave has no :math:`z`-component because the electric field lies
-entirely in the interface plane.
-
-
-:math:`\mathbf{M}^{(p)}` — p-wave contribution
-^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
-
-.. math::
-   :label: eq-Mp
-
-   \mathbf{M}^{(p)} =
-   \begin{pmatrix}
-   -I_3 + \cos 2\varphi\;I_4  &  \sin 2\varphi\;I_4        &  -\cos\varphi\;I_5 \\
-   \sin 2\varphi\;I_4         &  -I_3 - \cos 2\varphi\;I_4  &  -\sin\varphi\;I_5 \\
-   \cos\varphi\;I_5           &  \sin\varphi\;I_5            &  I_6
-   \end{pmatrix}.
-
-The *p*-wave carries all the :math:`z`-components of the scattered field.
 
 
 Implementation
