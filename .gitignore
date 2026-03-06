@@ -4,6 +4,9 @@ data/*
 !data/example/
 test/BEM/
 
+# unfinished theory
+derivation/*
+
 # Python cache and compiled files
 __pycache__/
 *.pyc

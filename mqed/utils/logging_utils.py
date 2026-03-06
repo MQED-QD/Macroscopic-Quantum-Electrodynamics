@@ -38,4 +38,12 @@ def setup_loggers_hydra_aware():
     logging.basicConfig(handlers=[InterceptHandler()], level=logging.DEBUG)
 
     logger.success(f"Logging -> {logfile}")
+    log_citation()
     return logfile
+
+
+def log_citation():
+    logger.info(
+        "MQED-QD | If you use this software, please cite: "
+        "Liu et al., J. Chem. Phys. (2025), doi:10.xxxx/..."
+    )

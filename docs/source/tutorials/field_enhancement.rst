@@ -191,6 +191,57 @@ a function of donor-acceptor distance.
 
    Field enhancement vs donor-acceptor distance.
 
+.. _tutorial-ret:
+
+Resonance Energy Transfer (``mqed_RET``)
+-----------------------------------------
+
+The ``mqed_FE`` command above plots the coherent and incoherent channels
+(:math:`V_{\alpha\beta}/V_{0,\alpha\beta}` and
+:math:`\Gamma_{\alpha\beta}/\Gamma_{0,\alpha\beta}`) separately.
+A companion command, ``mqed_RET``, computes the **resonance energy transfer
+enhancement factor** :math:`\gamma` — a single scalar that captures the
+overall RET enhancement by the dielectric environment:
+
+.. math::
+
+   \gamma
+   = \left|
+   \frac{\boldsymbol{\mu}_\alpha \cdot
+   \overline{\overline{\mathbf{G}}}(\mathbf{r}_\alpha,\mathbf{r}_\beta,\omega_\mathrm{M})
+   \cdot \boldsymbol{\mu}_\beta}
+   {\boldsymbol{\mu}_\alpha \cdot
+   \overline{\overline{\mathbf{G}}}_0(\mathbf{r}_\alpha,\mathbf{r}_\beta,\omega_\mathrm{M})
+   \cdot \boldsymbol{\mu}_\beta}
+   \right|^2.
+
+See :ref:`theory-resonance-enhancement` for the theoretical background.
+
+Quick start
+^^^^^^^^^^^
+
+.. code-block:: bash
+
+   mqed_RET
+
+This uses the configuration at ``configs/analysis/RET.yaml``, which is
+structured identically to the ``FE.yaml`` used above. The same input HDF5
+file, orientation parameters, and Hydra override syntax all apply:
+
+.. code-block:: bash
+
+   # Override dipole orientations
+   mqed_RET orientations.donor.phi_deg=0.0 orientations.acceptor.phi_deg=0.0
+
+   # Use a custom config
+   mqed_RET --config-name=my_RET
+
+The output is a plot of :math:`\gamma` versus donor--acceptor distance. While
+``mqed_FE`` separates the real and imaginary parts to reveal the individual
+coherent and incoherent channels, ``mqed_RET`` shows their combined effect as
+a single enhancement factor — useful for a quick assessment of whether a given
+dielectric structure enhances or suppresses resonance energy transfer overall.
+
 What's next?
 ------------
 

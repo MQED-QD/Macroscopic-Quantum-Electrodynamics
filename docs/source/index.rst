@@ -32,11 +32,10 @@ Key Features
    tutorials/index
 
 .. toctree::
-   :maxdepth: 1
+   :maxdepth: 2
    :caption: Theory
 
-   theory/two_layer
-   theory/RET
+   theory/index
 
 .. toctree::
    :maxdepth: 1

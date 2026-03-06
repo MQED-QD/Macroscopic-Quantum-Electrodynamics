@@ -1,4 +1,4 @@
-BEM
+﻿BEM
 ===
 
 ..
@@ -25,4 +25,5 @@ BEM
    compare_silver
    compute_peff
    reconstruct_GF
+   verify_bem_fresnel
 
