@@ -76,3 +76,8 @@ html_theme_options = {
         "color-brand-content": "#82B1FF",
     },
 }
+
+# Force light mode as default (Furo respects data-theme on <body>)
+html_context = {
+    "default_mode": "light",
+}
