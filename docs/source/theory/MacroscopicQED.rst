@@ -6,7 +6,7 @@ Macroscopic QED Framework
 
 This section summarizes the macroscopic quantum electrodynamics (MQED) framework
 implemented in this package. For detailed derivations, see our manuscript
-[Liu2025]_.
+[Liu2026]_.
 
 Overview
 --------
@@ -292,6 +292,6 @@ Casimir--Polder shifts—follow directly from it.
 References
 ----------
 
-.. [Liu2025] G. Liu *et al.*, "Liu, G., Wang, S. and Chen, H.T., 2026. MQED-QD: 
+.. [Liu2026] G. Liu *et al.*, "Liu, G., Wang, S. and Chen, H.T., 2026. MQED-QD: 
    An Open-Source Package for Quantum Dynamics Simulation in Complex Dielectric 
    Environments. arXiv preprint arXiv:2603.05378)."
