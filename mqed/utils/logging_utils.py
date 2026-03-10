@@ -45,5 +45,5 @@ def setup_loggers_hydra_aware():
 def log_citation():
     logger.info(
         "MQED-QD | If you use this software, please cite: "
-        "Liu et al., J. Chem. Phys. (2025), doi:10.xxxx/..."
+        "Liu, G., Wang, S. and Chen, H.T., 2026. MQED-QD: An Open-Source Package for Quantum Dynamics Simulation in Complex Dielectric Environments. arXiv preprint arXiv:2603.05378."
     )
