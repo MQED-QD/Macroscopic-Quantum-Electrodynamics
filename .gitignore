@@ -26,3 +26,4 @@ dist/
 *.egg-info/
 
 mqed/disorder/angle_disorder
+mqed/disorder/NN_cache
