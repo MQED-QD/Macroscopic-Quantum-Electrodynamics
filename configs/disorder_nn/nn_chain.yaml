@@ -41,7 +41,8 @@ initial_state:
 # --- Observables ---
 observables:
   msd: true                  # mean square displacement Σ|C_n|²(n-n₀)²
-  populations: true          # full |C_n(t)|² for every site
+  populations: false          # full |C_n(t)|² for every site
+  position: true             # mean position Σ|C_n|² n (units of site index)
 
 # --- Output ---
 output:
